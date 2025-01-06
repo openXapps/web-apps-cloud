@@ -1,5 +1,5 @@
 export const firebaseConfig = {
-  apiKey: '',
+  apiKey: import.meta.env.VITE_FB_APIKEY,
   authDomain: '',
   projectId: '',
   storageBucket: '',
