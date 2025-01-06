@@ -7,7 +7,7 @@ import { getAuth, signInWithEmailAndPassword, signOut, User } from "firebase/aut
 // Firestore
 // } from 'firebase/firestore/lite';
 
-import { firebaseConfig } from '@/config/firebase';
+import { firebaseConfig } from '@/lib/firebase';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -22,8 +22,8 @@ const auth = getAuth(app);
 //   return appModuleList;
 // }
 
-const email = 'openapps@gmail.com';
-const password = 'r3m3d1';
+const email = '';
+const password = '';
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null);
