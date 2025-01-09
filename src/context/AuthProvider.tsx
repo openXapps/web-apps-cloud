@@ -1,33 +1,28 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged,
-  User,
   UserCredential,
   Auth
 } from 'firebase/auth';
 
 import { firebaseConfig } from '@/lib/firebase';
-
-// Check this tut out!
-// https://medium.com/@yogeshmulecraft/building-a-react-app-with-firebase-authentication-using-authcontext-c749886678b2
+import type { AuthContextState, AuthContextType } from '@/lib/types';
+import AuthReducer from './AuthReducer';
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-type AuthProviderContextType = {
-  auth: Auth;
-  currentUser: User | null;
-}
-
-const currentUser: User | null = null;
-
-const AuthProviderContext = createContext<AuthProviderContextType>({
+const initAppContextState: AuthContextState = {
   auth: auth,
-  currentUser: currentUser,
+  isAuthorized: false,
+};
+
+const AuthProviderContext = createContext<AuthContextType>({
+  state: initAppContextState,
+  dispatch: () => { },
 });
 
 /**
@@ -36,25 +31,20 @@ const AuthProviderContext = createContext<AuthProviderContextType>({
  * @returns React provider
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
+  const [state, dispatch] = useReducer(AuthReducer, initAppContextState);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      setUser(user);
+    const unsubscribe = state.auth.onAuthStateChanged(user => {
+      // console.log('onAuthStateChanged triggered: ', state.auth);
       setLoading(false);
-      console.log('onAuthStateChanged triggered');
+      dispatch({ type: 'SET_ISAUTHORIZED', payload: user != null })
     });
     return unsubscribe;
   }, [])
 
-  const value: AuthProviderContextType = {
-    auth: auth,
-    currentUser: user,
-  }
-
   return (
-    <AuthProviderContext.Provider value={value}>
+    <AuthProviderContext.Provider value={{ state, dispatch }}>
       {!loading && children}
     </AuthProviderContext.Provider>
   )
@@ -75,12 +65,17 @@ export function useAuth() {
     return signOut(auth);
   }
 
+  function setAuthorized(value: boolean) {
+    context.dispatch({ type: 'SET_ISAUTHORIZED', payload: value });
+  }
+
   if (context === undefined)
     throw new Error("useAuth must be used within a AuthProvider")
 
   return {
-    auth: context.auth,
-    currentUser: context.currentUser,
+    auth: context.state.auth,
+    isAuthorized: context.state.isAuthorized,
+    setAuthorized: setAuthorized,
     signUserIn: signUserIn,
     signUserOut: signUserOut,
   };

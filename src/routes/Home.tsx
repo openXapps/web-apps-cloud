@@ -1,26 +1,19 @@
 
-import { useAuth } from '@/context/AuthProvider';
 import { Link } from 'react-router';
 
-import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthProvider';
+
+import CloudModules from '@/components/CloudModules';
 
 export default function Home() {
-  const { currentUser, signUserOut, auth } = useAuth();
-
-  const handleSignUserOut = async () => {
-    try {
-      await signUserOut(auth);
-    } catch (error) {
-
-    }
-  }
+  const { auth, isAuthorized } = useAuth();
 
   return (
     <div className='p-5'>
-      {currentUser ? (
+      {isAuthorized ? (
         <div>
-          <h1 className="mb-3">Welcome {currentUser.email}</h1>
-          <Button className='w-40' onClick={handleSignUserOut}>Sign Out</Button>
+          <h1 className="mb-3">Welcome {auth.currentUser?.email}</h1>
+          <CloudModules />
         </div>
       ) : (
         <div className='flex gap-3'>
