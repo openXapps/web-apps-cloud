@@ -31,3 +31,21 @@ export type AuthContextType = {
   state: AuthContextState;
   dispatch: React.Dispatch<AuthReducerActions>;
 }
+
+/**
+ * Firestore AppModules document type
+ */
+export type AppModuleDocType = {
+  moduleId?: string;
+  moduleName: string;
+  moduleDesc?: string;
+}
+
+/**
+ * Firestore DataSync document type
+ */
+export type DataSyncDocType = {
+  userId: string;
+  moduleId: string;
+  syncDate: string;  
+}

@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 
 import { useAuth } from '@/context/AuthProvider';
 
-import CloudModules from '@/components/CloudModules';
+import AppModules from '@/components/AppModules';
 
 export default function Home() {
   const { auth, isAuthorized } = useAuth();
@@ -13,7 +13,7 @@ export default function Home() {
       {isAuthorized ? (
         <div>
           <h1 className="mb-3">Welcome {auth.currentUser?.email}</h1>
-          <CloudModules />
+          <AppModules />
         </div>
       ) : (
         <div className='flex gap-3'>
