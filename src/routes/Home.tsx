@@ -1,7 +1,7 @@
 
 import { Link } from 'react-router';
 
-import { useAuth } from '@/context/AuthProvider';
+import useAuth from '@/hooks/useAuth';
 
 import AppModules from '@/components/AppModules';
 

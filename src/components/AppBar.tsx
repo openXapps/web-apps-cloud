@@ -1,7 +1,9 @@
 import { LogOut, UserRound, } from 'lucide-react';
-import { useAuth } from '@/context/AuthProvider';
 import { twMerge } from 'tailwind-merge';
+
 import { Button } from './ui/button';
+
+import useAuth from '@/hooks/useAuth';
 
 export default function AppBar() {
   const { auth, isAuthorized, setAuthorized, signUserOut } = useAuth();

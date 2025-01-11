@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-import { useAuth } from '@/context/AuthProvider';
+import useAuth from '@/hooks/useAuth';
 
 const isErrorInit: { status: boolean, message: string } = { status: false, message: '' };
 

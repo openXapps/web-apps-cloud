@@ -5,7 +5,7 @@ import Home from '@/routes/Home';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import SignUserIn from '@/routes/SignUserIn';
 
-import { useAuth } from '@/context/AuthProvider';
+import useAuth from '@/hooks/useAuth';
 
 export default function Router() {
   const { isAuthorized } = useAuth();
