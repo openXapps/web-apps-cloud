@@ -10,6 +10,7 @@ import {
   type DocumentData,
   type CollectionReference,
   type DocumentReference,
+  deleteDoc,
 } from 'firebase/firestore';
 
 import { firebaseConfig } from '@/lib/firebase';
@@ -57,18 +58,29 @@ export default function useFirebase() {
    * Update an existing document in a collection
    * @param {string} fbPath Firebase database path string
    * @param {string} docId Document Id to update
-   * @param {any} fbDoc Document to data
-   * @returns Reference to new document
+   * @param {any} fbDoc Document data to update
+   * @returns REmpty Promise
    */
-  async function setData(fbPath: string, docId: string, fbDoc: DocumentData): Promise<DocumentReference<DocumentData, DocumentData>> {
+  async function setData(fbPath: string, docId: string, fbDoc: DocumentData): Promise<void> {
     const docRef = doc(db, fbPath, docId);
-    setDoc(docRef, fbDoc);
-    return docRef;
+    return setDoc(docRef, fbDoc);
+  }
+
+  /**
+ * Delete an existing document in a collection
+ * @param {string} fbPath Firebase database path string
+ * @param {string} docId Document Id to delete
+ * @returns Empty Promise
+ */
+  async function delData(fbPath: string, docId: string): Promise<void> {
+    const docRef = doc(db, fbPath, docId);
+    return deleteDoc(docRef);
   }
 
   return {
     getData: getData,
     addData: addData,
     setData: setData,
+    delData: delData,
   }
 }

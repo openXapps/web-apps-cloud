@@ -18,21 +18,25 @@ export default function AppBar() {
   }
 
   return (
-    <div className='flex justify-between items-center p-3'>
-      <h1 className="text-orange-400">OpenApps Cloud Data Manager</h1>
-      <div className='flex gap-2'>
-        <Button
-          variant="ghost"
-          size="icon"
-          disabled={!isAuthorized}
-          className={twMerge(isAuthorized ? 'text-green-400' : '')}
-        ><UserRound />
-        </Button>
-        {isAuthorized && (
-          <Button variant="ghost" size="icon" onClick={handleSignUserOut}>
-            <LogOut />
-          </Button>
-        )}
+    <div className="bg-slate-400">
+      <div className='container'>
+        <div className='container flex justify-between items-center p-3'>
+          <h1 className="text-xl font-bold text-orange-900 dark:text-orange-400">OpenApps Cloud Data Manager</h1>
+          <div className='flex gap-2'>
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={!isAuthorized}
+              className={twMerge(isAuthorized ? 'text-green-800 dark:text-green-400' : '')}
+            ><UserRound />
+            </Button>
+            {isAuthorized && (
+              <Button variant="ghost" size="icon" onClick={handleSignUserOut}>
+                <LogOut />
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

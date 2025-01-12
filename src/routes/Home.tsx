@@ -9,7 +9,7 @@ export default function Home() {
   const { auth, isAuthorized } = useAuth();
 
   return (
-    <div className='p-5'>
+    <div className="p-3">
       {isAuthorized ? (
         <div>
           <h1 className="mb-3">Welcome {auth.currentUser?.email}</h1>

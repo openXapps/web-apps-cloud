@@ -43,8 +43,8 @@ export default function SignUserIn() {
   }
 
   return (
-    <div className="max-w-md mx-auto p-5">
-      <h1 className="text-xl mb-3">Sign In</h1>
+    <div className="max-w-md mx-auto p-3">
+      <h1 className="font-bold mb-3">Sign In</h1>
       <form action="" onSubmit={handleSignUserIn}>
         <div className="flex flex-col gap-3">
           <Input ref={username} type="email" placeholder="username" />
