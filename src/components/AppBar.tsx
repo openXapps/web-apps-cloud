@@ -1,5 +1,7 @@
-import { LogOut, UserRound, } from 'lucide-react';
+import { useNavigate } from 'react-router';
 import { twMerge } from 'tailwind-merge';
+
+import { LogOut, UserRound, } from 'lucide-react';
 
 import { Button } from './ui/button';
 
@@ -7,6 +9,7 @@ import useAuth from '@/hooks/useAuth';
 
 export default function AppBar() {
   const { auth, isAuthorized, setAuthorized, signUserOut } = useAuth();
+  const rrNavigate = useNavigate();
 
   const handleSignUserOut = async () => {
     try {
@@ -28,6 +31,7 @@ export default function AppBar() {
               size="icon"
               disabled={!isAuthorized}
               className={twMerge(isAuthorized ? 'text-green-800 dark:text-green-400' : '')}
+              onClick={() => rrNavigate('/user')}
             ><UserRound />
             </Button>
             {isAuthorized && (

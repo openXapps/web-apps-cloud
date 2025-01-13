@@ -1,13 +1,19 @@
 import { createContext, useEffect, useReducer, useState } from 'react';
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import {
+  getAuth,
+  connectAuthEmulator
+} from 'firebase/auth';
 
 import { firebaseConfig } from '@/lib/firebase';
 import type { AuthContextState, AuthContextType } from '@/lib/types';
 import AuthReducer from '@/context/AuthReducer';
 
+// PRODUCTION
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+// DEVELOPMENT
+connectAuthEmulator(auth, "http://127.0.0.1:9099");
 
 const initAppContextState: AuthContextState = {
   auth: auth,

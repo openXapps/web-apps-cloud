@@ -33,6 +33,17 @@ export type AuthContextType = {
 }
 
 /**
+ * Firebase user info
+ */
+export type UserInfoType = {
+  displayName: string | null;
+  email: string | null;
+  phone: string | null;
+  photoURL: string | null;
+  emailVerified: boolean;
+}
+
+/**
  * Firestore AppModules document type
  */
 export type AppModuleDocType = {
@@ -47,5 +58,5 @@ export type AppModuleDocType = {
 export type DataSyncDocType = {
   userId: string;
   moduleId: string;
-  syncDate: string;  
+  syncDate: string;
 }

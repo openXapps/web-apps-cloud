@@ -6,11 +6,12 @@ import {
   getDocs,
   addDoc,
   setDoc,
+  deleteDoc,
   getFirestore,
   type DocumentData,
   type CollectionReference,
   type DocumentReference,
-  deleteDoc,
+  connectFirestoreEmulator,
 } from 'firebase/firestore';
 
 import { firebaseConfig } from '@/lib/firebase';
@@ -18,8 +19,11 @@ import { firebaseConfig } from '@/lib/firebase';
 // https://firebase.google.com/docs/firestore/query-data/get-data
 // https://firebase.google.com/docs/firestore/manage-data/add-data
 
+// PRODUCTION
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+// DEVELOPMENT
+connectFirestoreEmulator(db, '127.0.0.1', 8080);
 
 type DocType = {
   docId?: string;

@@ -2,11 +2,13 @@ import { useContext } from 'react';
 import {
   signInWithEmailAndPassword,
   signOut,
-  UserCredential,
-  Auth
+  type UserCredential,
+  type Auth,
+  type User
 } from 'firebase/auth';
 
 import { auth, AuthProviderContext } from '@/context/AuthProvider';
+import type { UserInfoType } from '@/lib/types';
 
 /**
  * Auth context hook
@@ -27,6 +29,17 @@ export default function useAuth() {
     context.dispatch({ type: 'SET_ISAUTHORIZED', payload: value });
   }
 
+  function getInfo(): UserInfoType {
+    const user = context.state.auth.currentUser;
+    return {
+      displayName: user?.displayName || null,
+      email: user?.email || null,
+      phone: user?.phoneNumber || null,
+      photoURL: user?.photoURL || null,
+      emailVerified: user?.emailVerified || false,
+    }
+  }
+
   if (context === undefined)
     throw new Error("useAuth must be used within a AuthProvider");
 
@@ -36,5 +49,6 @@ export default function useAuth() {
     setAuthorized: setAuthorized,
     signUserIn: signUserIn,
     signUserOut: signUserOut,
+    getInfo: getInfo,
   };
 }

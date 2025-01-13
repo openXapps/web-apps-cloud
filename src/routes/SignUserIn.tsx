@@ -8,6 +8,10 @@ import useAuth from '@/hooks/useAuth';
 
 const isErrorInit: { status: boolean, message: string } = { status: false, message: '' };
 
+// For emulation testing
+const testUser = 'john@domain.com';
+const testPass = 'password';
+
 export default function SignUserIn() {
   const rrNavigate = useNavigate();
   const { signUserIn, setAuthorized, isAuthorized } = useAuth();
@@ -47,8 +51,17 @@ export default function SignUserIn() {
       <h1 className="font-bold mb-3">Sign In</h1>
       <form action="" onSubmit={handleSignUserIn}>
         <div className="flex flex-col gap-3">
-          <Input ref={username} type="email" placeholder="username" />
-          <Input id="password" ref={password} type="password" placeholder="password" />
+          <Input
+            defaultValue={testUser}
+            ref={username}
+            type="email"
+            placeholder="username" />
+          <Input
+            defaultValue={testPass}
+            // id="password"
+            ref={password}
+            type="password"
+            placeholder="password" />
           <div className="flex gap-2">
             <Button disabled={isBusy || isAuthorized} className='' onClick={handleSignUserIn} type="submit">Sign In</Button>
             <Button disabled={isBusy || isAuthorized} className='' onClick={handleClearFields}>Clear</Button>

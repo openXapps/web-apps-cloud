@@ -4,6 +4,7 @@ import Layout from '@/routes/Layout';
 import Home from '@/routes/Home';
 import ProtectedRoute from '@/routes/ProtectedRoute';
 import SignUserIn from '@/routes/SignUserIn';
+import User from '@/routes/User';
 
 import useAuth from '@/hooks/useAuth';
 
@@ -17,6 +18,9 @@ export default function Router() {
           <Route index element={<Home />} />
           <Route element={<ProtectedRoute isAuthorized={!isAuthorized} redirectPath="/" />}>
             <Route path="signin" element={<SignUserIn />} />
+          </Route>
+          <Route element={<ProtectedRoute isAuthorized={isAuthorized} redirectPath="/" />}>
+            <Route path="user" element={<User />} />
           </Route>
         </Route>
       </Routes>
