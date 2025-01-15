@@ -37,10 +37,10 @@ export type AuthContextType = {
  */
 export type UserInfoType = {
   displayName: string | null;
-  email: string | null;
-  phone: string | null;
   photoURL: string | null;
-  emailVerified: boolean;
+  email: string | null;
+  uid?: string | null;
+  emailVerified?: boolean;
 }
 
 /**

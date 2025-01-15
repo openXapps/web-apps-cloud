@@ -64,8 +64,8 @@ export default function SignUserIn() {
             placeholder="password" />
           <div className="flex gap-2">
             <Button disabled={isBusy || isAuthorized} className='' onClick={handleSignUserIn} type="submit">Sign In</Button>
-            <Button disabled={isBusy || isAuthorized} className='' onClick={handleClearFields}>Clear</Button>
-            <Button disabled={isBusy} className='' onClick={() => rrNavigate('/', { replace: true })}>Cancel</Button>
+            <Button disabled={isBusy || isAuthorized} className='' onClick={handleClearFields} type="button">Clear</Button>
+            <Button disabled={isBusy} className='' onClick={() => rrNavigate(-1)} type="button">Cancel</Button>
           </div>
         </div>
       </form>

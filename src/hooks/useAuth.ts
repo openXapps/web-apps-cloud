@@ -2,9 +2,12 @@ import { useContext } from 'react';
 import {
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
+  updateEmail,
+  updatePassword,
   type UserCredential,
   type Auth,
-  type User
+  type User,
 } from 'firebase/auth';
 
 import { auth, AuthProviderContext } from '@/context/AuthProvider';
@@ -29,15 +32,51 @@ export default function useAuth() {
     context.dispatch({ type: 'SET_ISAUTHORIZED', payload: value });
   }
 
+  function getUID(): string | undefined {
+    return context.state.auth.currentUser?.uid;
+  }
+
   function getInfo(): UserInfoType {
-    const user = context.state.auth.currentUser;
-    return {
-      displayName: user?.displayName || null,
-      email: user?.email || null,
-      phone: user?.phoneNumber || null,
-      photoURL: user?.photoURL || null,
-      emailVerified: user?.emailVerified || false,
+    if (context.state.auth.currentUser) {
+      const user: User = context.state.auth.currentUser;
+      return {
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+        email: user.email,
+        emailVerified: user.emailVerified,
+      }
     }
+    return {
+      displayName: null,
+      photoURL: null,
+      email: null,
+      emailVerified: false
+    }
+  }
+
+  function setInfo(info: UserInfoType): Promise<void> {
+    if (context.state.auth.currentUser !== null) {
+      const user: User = {
+        ...context.state.auth.currentUser,
+        displayName: info.displayName,
+        photoURL: info.photoURL,
+        email: info.email,
+      }
+      return updateProfile(context.state.auth.currentUser, user);
+    }
+    return Promise.resolve();
+  }
+
+  function setEmail(newEmail: string): Promise<void> {
+    if (context.state.auth.currentUser !== null)
+      return updateEmail(context.state.auth.currentUser, newEmail);
+    return Promise.resolve();
+  }
+
+  function setPassword(newPassword: string): Promise<void> {
+    if (context.state.auth.currentUser !== null)
+      return updatePassword(context.state.auth.currentUser, newPassword);
+    return Promise.resolve();
   }
 
   if (context === undefined)
@@ -49,6 +88,10 @@ export default function useAuth() {
     setAuthorized: setAuthorized,
     signUserIn: signUserIn,
     signUserOut: signUserOut,
+    getUID: getUID,
     getInfo: getInfo,
+    setInfo: setInfo,
+    setEmail: setEmail,
+    setPassword: setPassword,
   };
 }

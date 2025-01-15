@@ -21,7 +21,7 @@ export default function AppBar() {
   }
 
   return (
-    <div className="bg-slate-400">
+    <div className="bg-slate-400 dark:bg-slate-500">
       <div className='container'>
         <div className='container flex justify-between items-center p-3'>
           <h1 className="text-xl font-bold text-orange-900 dark:text-orange-400">OpenApps Cloud Data Manager</h1>

@@ -112,7 +112,10 @@ export default function AppModules() {
       {isError.status ? (
         <div>
           <p className="text-red-400">Error fetching appModules from Firebase</p>
-          <Button className="mt-3" variant="outline" onClick={handleReset}>Reset</Button>
+          <Button className="mt-3" variant="outline" onClick={() => {
+            handleReset();
+            fetchData();
+          }}>Reset</Button>
         </div>
       ) : (
         <div>
