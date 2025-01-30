@@ -3,7 +3,8 @@ import { Link } from 'react-router';
 
 import useAuth from '@/hooks/useAuth';
 
-import AppModules from '@/components/AppModules';
+// import AppModules from '@/components/AppModules';
+import AppBookmarks from '@/components/AppBookmarks';
 
 export default function Home() {
   const { auth, isAuthorized } = useAuth();
@@ -13,7 +14,8 @@ export default function Home() {
       {isAuthorized ? (
         <div>
           <h1 className="mb-3">Welcome {auth.currentUser?.displayName || 'NO NAME'}</h1>
-          <AppModules />
+          {/* <AppModules /> */}
+          <AppBookmarks />
         </div>
       ) : (
         <div className='flex gap-3'>
