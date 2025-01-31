@@ -1,4 +1,3 @@
-// import { useEffect, useRef, useState } from 'react';
 import { initializeApp } from 'firebase/app';
 import {
   collection,
@@ -50,19 +49,19 @@ export default function useFirebase() {
   /**
    * Create new document in a collection
    * @param {string} fbPath Firebase database path string
+   * @param {DocumentData} fbDoc Document data consists of fields mapped to values
    * @returns Reference to new document
    */
   async function addData(fbPath: string, fbDoc: DocumentData): Promise<DocumentReference<DocumentData, DocumentData>> {
     const docCollection = collection(db, fbPath);
-    const docRef = await addDoc(docCollection, fbDoc);
-    return docRef;
+    return addDoc(docCollection, fbDoc);
   }
 
   /**
    * Update an existing document in a collection
    * @param {string} fbPath Firebase database path string
    * @param {string} docId Document Id to update
-   * @param {any} fbDoc Document data to update
+   * @param {any} fbDoc Document data consists of fields mapped to values
    * @returns REmpty Promise
    */
   async function setData(fbPath: string, docId: string, fbDoc: DocumentData): Promise<void> {
