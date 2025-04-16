@@ -61,7 +61,7 @@ export default function User() {
 
   return (
     <div className="p-3 space-y-3">
-      <p>User Information</p>
+      <p className="font-bold">User Information</p>
       <p>{getUID()}</p>
       <form className="space-y-2" onSubmit={handleUpdateUser}>
         <Input ref={nameRef} type="text" placeholder="Display name" defaultValue={getInfo().displayName || undefined} />

@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { type DocumentData } from 'firebase/firestore';
 
 // import useAppModules from '@/hooks/useAppModules';
 import useFirebase from '@/hooks/useFirebase';
 
-import { Pencil, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Pencil, Save, Trash2 } from 'lucide-react';
 
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -24,6 +25,7 @@ export default function AppModules() {
   const firebase = useFirebase();
   const moduleNameRef = useRef<HTMLInputElement | null>(null);
   const moduleDescRef = useRef<HTMLInputElement | null>(null);
+  const rrNavigate = useNavigate();
   const [docId, setDocId] = useState<string>('');
   const [appModules, setAppModules] = useState<DocumentData[]>([]);
   const [saveMode, setSaveMode] = useState<Modes>('NEW');
@@ -107,10 +109,13 @@ export default function AppModules() {
   }
 
   return (
-    <div>
-      <p className="pb-2">OpenApps PWA Modules</p>
+    <div className="p-3 space-y-3">
+      <div className="flex justify-between items-center">
+        <p className="font-bold">OpenApps PWA Modules</p>
+        <Button variant="ghost" size="icon" onClick={() => rrNavigate(-1)}><ArrowLeft /></Button>
+      </div>
       {isError.status ? (
-        <div>
+        <div className="">
           <p className="text-red-400">Error fetching appModules from Firebase</p>
           <Button className="mt-3" variant="outline" onClick={() => {
             handleReset();
@@ -118,7 +123,7 @@ export default function AppModules() {
           }}>Reset</Button>
         </div>
       ) : (
-        <div>
+        <div className="">
           <form className="flex gap-5 justify-between items-center border border-slate-400 rounded-lg p-3" action="" onSubmit={handleSaveModule}>
             <div className="space-y-2 w-full">
               <Input className="" ref={moduleNameRef} placeholder="Module name" />
@@ -139,7 +144,7 @@ export default function AppModules() {
                   <p>{data.moduleDesc}</p>
                   <p className="font-mono">{data.docId}</p>
                 </div>
-                <div className="space-x-1">
+                <div className="flex flex-nowrap gap-1">
                   <Button variant="ghost" size="icon" disabled={isBusy} onClick={e => handleEditModule(e, data)}><Pencil /></Button>
                   <Button variant="ghost" size="icon" disabled={isBusy} onClick={e => handleDeleteModule(e, data.docId)}><Trash2 /></Button>
                 </div>

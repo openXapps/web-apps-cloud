@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { type DocumentData } from 'firebase/firestore';
 
 // import useAppModules from '@/hooks/useAppModules';
@@ -8,6 +9,7 @@ import useAuth from '@/hooks/useAuth';
 // import { Pencil, Save, Trash2 } from 'lucide-react';
 
 import { Button } from './ui/button';
+import { ArrowLeft } from 'lucide-react';
 // import { Input } from './ui/input';
 
 const isErrorInit: { status: boolean, message: string } = { status: false, message: '' };
@@ -16,6 +18,7 @@ export default function AppBookmarks() {
   // const appModulesHook = useAppModules();
   const firebase = useFirebase();
   const auth = useAuth();
+  const rrNavigate = useNavigate();
   const [appBookmarks, setAppBookmarks] = useState<DocumentData[]>([]);
   const [isError, setIsError] = useState(isErrorInit);
   const [isBusy, setIsBusy] = useState(false);
@@ -42,8 +45,11 @@ export default function AppBookmarks() {
   }
 
   return (
-    <div>
-      <p className="pb-2">OpenApps Bookmarks</p>
+    <div className="p-3 space-y-3">
+      <div className="flex justify-between items-center">
+        <p className="font-bold">OpenApps Bookmarks</p>
+        <Button variant="ghost" size="icon" onClick={() => rrNavigate(-1)}><ArrowLeft /></Button>
+      </div>
       {isError.status ? (
         <div>
           <p className="text-red-400">{isError.message}</p>
@@ -62,7 +68,7 @@ export default function AppBookmarks() {
               lastUsed: v.document.lastUsed,
             };
             return (
-              <div key={data.docId} className="flex flex-row justify-between mt-3 p-2 border border-orange-800 rounded-lg">
+              <div key={data.docId} className="flex flex-row justify-between p-2 border border-orange-800 rounded-lg">
                 <div>
                   <p className="font-bold">{data.siteName}</p>
                   <p className="">{data.siteURL}</p>

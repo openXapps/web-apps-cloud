@@ -7,6 +7,8 @@ import SignUserIn from '@/routes/SignUserIn';
 import User from '@/routes/User';
 
 import useAuth from '@/hooks/useAuth';
+import DataModules from './DataModules';
+import DataBookMarks from './DataBookMarks';
 
 export default function Router() {
   const { isAuthorized } = useAuth();
@@ -21,6 +23,8 @@ export default function Router() {
           </Route>
           <Route element={<ProtectedRoute isAuthorized={isAuthorized} redirectPath="/" />}>
             <Route path="user" element={<User />} />
+            <Route path="datamodules" element={<DataModules />} />
+            <Route path="databookmarks" element={<DataBookMarks />} />
           </Route>
         </Route>
       </Routes>
