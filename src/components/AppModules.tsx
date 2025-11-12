@@ -1,111 +1,111 @@
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
-import { type DocumentData } from 'firebase/firestore';
+import { useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router"
+import { type DocumentData } from "firebase/firestore"
 
-// import useAppModules from '@/hooks/useAppModules';
-import useFirebase from '@/hooks/useFirebase';
+// import useAppModules from "@/hooks/useAppModules";
+import useFirebase from "@/hooks/useFirebase"
 
-import { ArrowLeft, Pencil, Save, Trash2 } from 'lucide-react';
+import { ArrowLeft, Pencil, Save, Trash2 } from "lucide-react"
 
-import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { Button } from "./ui/button"
+import { Input } from "./ui/input"
 
-const isErrorInit: { status: boolean, message: string } = { status: false, message: '' };
-// const isErrorInit: { status: boolean, message: string } = { status: true, message: 'Test' };
+const isErrorInit: { status: boolean, message: string } = { status: false, message: "" }
+// const isErrorInit: { status: boolean, message: string } = { status: true, message: "Test" };
 
-type Modes = 'NEW' | 'SET';
+type Modes = "NEW" | "SET"
 type ModuleModelType = {
-  moduleName: string;
-  moduleDesc: string;
-  docId: string;
-};
+  moduleName: string
+  moduleDesc: string
+  docId: string
+}
 
 export default function AppModules() {
   // const appModulesHook = useAppModules();
-  const firebase = useFirebase();
-  const moduleNameRef = useRef<HTMLInputElement | null>(null);
-  const moduleDescRef = useRef<HTMLInputElement | null>(null);
-  const rrNavigate = useNavigate();
-  const [docId, setDocId] = useState<string>('');
-  const [appModules, setAppModules] = useState<DocumentData[]>([]);
-  const [saveMode, setSaveMode] = useState<Modes>('NEW');
-  const [isError, setIsError] = useState(isErrorInit);
-  const [isBusy, setIsBusy] = useState(false);
+  const firebase = useFirebase()
+  const moduleNameRef = useRef<HTMLInputElement | null>(null)
+  const moduleDescRef = useRef<HTMLInputElement | null>(null)
+  const rrNavigate = useNavigate()
+  const [docId, setDocId] = useState<string>("")
+  const [appModules, setAppModules] = useState<DocumentData[]>([])
+  const [saveMode, setSaveMode] = useState<Modes>("NEW")
+  const [isError, setIsError] = useState(isErrorInit)
+  const [isBusy, setIsBusy] = useState(false)
 
   function fetchData() {
-    !isBusy && setIsBusy(true);
-    firebase.getData('appModules').then(data => {
-      setAppModules(data);
-      isError && setIsError(isErrorInit);
+    !isBusy && setIsBusy(true)
+    firebase.getData("appModules").then(data => {
+      setAppModules(data)
+      isError && setIsError(isErrorInit)
     }).catch((error) => {
-      console.log(error);
-      setIsError({ status: true, message: 'Fetch app modules error' });
+      console.log(error)
+      setIsError({ status: true, message: "Fetch app modules error" })
     })
-    handleReset();
+    handleReset()
   }
 
   useEffect(() => {
-    fetchData();
+    fetchData()
   }, [])
 
   const handleSaveModule = async (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
-    e.preventDefault();
+    e.preventDefault()
     if (moduleNameRef.current?.value && moduleDescRef.current?.value) {
-      !isBusy && setIsBusy(true);
+      !isBusy && setIsBusy(true)
       try {
-        if (saveMode === 'NEW') {
-          await firebase.addData('appModules', {
+        if (saveMode === "NEW") {
+          await firebase.addData("appModules", {
             moduleName: moduleNameRef.current.value,
             moduleDesc: moduleDescRef.current.value,
-          });
+          })
         }
-        if (saveMode === 'SET' && docId) {
-          await firebase.setData('appModules', docId, {
+        if (saveMode === "SET" && docId) {
+          await firebase.setData("appModules", docId, {
             moduleName: moduleNameRef.current.value,
             moduleDesc: moduleDescRef.current.value,
-          });
+          })
         }
-        fetchData();
+        fetchData()
       } catch (error) {
-        console.log(error);
-        setIsError({ status: true, message: 'Error while add app module' });
+        console.log(error)
+        setIsError({ status: true, message: "Error while add app module" })
       }
-      handleReset();
+      handleReset()
     }
   }
 
   const handleEditModule = async (e: React.FormEvent<HTMLButtonElement>, { moduleName, moduleDesc, docId }: ModuleModelType) => {
-    e.preventDefault();
-    setDocId(docId);
-    setSaveMode('SET');
+    e.preventDefault()
+    setDocId(docId)
+    setSaveMode("SET")
     if (moduleNameRef.current && moduleDescRef.current) {
-      moduleNameRef.current.value = moduleName;
-      moduleDescRef.current.value = moduleDesc;
+      moduleNameRef.current.value = moduleName
+      moduleDescRef.current.value = moduleDesc
     }
   }
 
   const handleDeleteModule = async (e: React.FormEvent<HTMLButtonElement>, docId: string) => {
-    e.preventDefault();
+    e.preventDefault()
     if (docId) {
-      !isBusy && setIsBusy(true);
+      !isBusy && setIsBusy(true)
       try {
-        await firebase.delData('appModules', docId);
-        fetchData();
+        await firebase.delData("appModules", docId)
+        fetchData()
       } catch (error) {
-        console.log(error);
-        setIsError({ status: true, message: 'Error while deleting app module' });
+        console.log(error)
+        setIsError({ status: true, message: "Error while deleting app module" })
       }
-      handleReset();
+      handleReset()
     }
   }
 
   const handleReset = () => {
-    if (moduleNameRef.current !== null) moduleNameRef.current.value = '';
-    if (moduleDescRef.current !== null) moduleDescRef.current.value = '';
-    setSaveMode('NEW');
-    setDocId('');
-    setIsBusy(false);
-    setIsError(isErrorInit);
+    if (moduleNameRef.current !== null) moduleNameRef.current.value = ""
+    if (moduleDescRef.current !== null) moduleDescRef.current.value = ""
+    setSaveMode("NEW")
+    setDocId("")
+    setIsBusy(false)
+    setIsError(isErrorInit)
   }
 
   return (
@@ -118,8 +118,8 @@ export default function AppModules() {
         <div className="">
           <p className="text-red-400">Error fetching appModules from Firebase</p>
           <Button className="mt-3" variant="outline" onClick={() => {
-            handleReset();
-            fetchData();
+            handleReset()
+            fetchData()
           }}>Reset</Button>
         </div>
       ) : (
@@ -134,9 +134,9 @@ export default function AppModules() {
           {appModules.map(v => {
             const data: ModuleModelType = {
               moduleName: v.document.moduleName,
-              moduleDesc: v.document.moduleDesc || 'No description',
+              moduleDesc: v.document.moduleDesc || "No description",
               docId: v.id
-            };
+            }
             return (
               <div key={data.docId} className="flex flex-row justify-between mt-3 p-2 border border-orange-800 rounded-lg">
                 <div>

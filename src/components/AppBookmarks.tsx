@@ -1,47 +1,48 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
-import { type DocumentData } from 'firebase/firestore';
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router"
+import { type DocumentData } from "firebase/firestore"
 
-// import useAppModules from '@/hooks/useAppModules';
-import useFirebase from '@/hooks/useFirebase';
-import useAuth from '@/hooks/useAuth';
+// import useAppModules from "@/hooks/useAppModules";
+import useFirebase from "@/hooks/useFirebase"
+import useAuth from "@/hooks/useAuth"
 
-// import { Pencil, Save, Trash2 } from 'lucide-react';
+// import { Pencil, Save, Trash2 } from "lucide-react";
 
-import { Button } from './ui/button';
-import { ArrowLeft } from 'lucide-react';
-// import { Input } from './ui/input';
+import { Button } from "./ui/button"
+import { ArrowLeft } from "lucide-react"
+// import { Input } from "./ui/input";
 
-const isErrorInit: { status: boolean, message: string } = { status: false, message: '' };
+const isErrorInit: { status: boolean, message: string } = { status: false, message: "" }
 
 export default function AppBookmarks() {
   // const appModulesHook = useAppModules();
-  const firebase = useFirebase();
-  const auth = useAuth();
-  const rrNavigate = useNavigate();
-  const [appBookmarks, setAppBookmarks] = useState<DocumentData[]>([]);
-  const [isError, setIsError] = useState(isErrorInit);
-  const [isBusy, setIsBusy] = useState(false);
+  const firebase = useFirebase()
+  const auth = useAuth()
+  const rrNavigate = useNavigate()
+  const [appBookmarks, setAppBookmarks] = useState<DocumentData[]>([])
+  const [isError, setIsError] = useState(isErrorInit)
+  const [isBusy, setIsBusy] = useState(false)
 
   function fetchData() {
-    !isBusy && setIsBusy(true);
-    firebase.getData('/appBookmarker/' + auth.getUID() + '/bookmarks').then(data => {
-      setAppBookmarks(data);
-      isError && setIsError(isErrorInit);
+    !isBusy && setIsBusy(true)
+    // firebase.getData("/appBookmarker/" + auth.getUID() + "/bookmarks").then(data => {
+    firebase.getData("/" + auth.getUID() + "/bookmarks").then(data => {
+      setAppBookmarks(data)
+      isError && setIsError(isErrorInit)
     }).catch((error) => {
-      console.log(error);
-      setIsError({ status: true, message: 'Error fetching appBookmarks from Firebase' });
+      console.log(error)
+      setIsError({ status: true, message: `Error fetching bookmarks for userId ${auth.getUID()}` })
     })
-    handleReset();
+    handleReset()
   }
 
   useEffect(() => {
-    fetchData();
+    fetchData()
   }, [])
 
   const handleReset = () => {
-    setIsBusy(false);
-    setIsError(isErrorInit);
+    setIsBusy(false)
+    setIsError(isErrorInit)
   }
 
   return (
@@ -54,8 +55,8 @@ export default function AppBookmarks() {
         <div>
           <p className="text-red-400">{isError.message}</p>
           <Button className="mt-3" variant="outline" onClick={() => {
-            handleReset();
-            fetchData();
+            handleReset()
+            fetchData()
           }}>Reset</Button>
         </div>
       ) : (
@@ -66,7 +67,7 @@ export default function AppBookmarks() {
               siteName: v.document.siteName,
               siteURL: v.document.siteURL,
               lastUsed: v.document.lastUsed,
-            };
+            }
             return (
               <div key={data.docId} className="flex flex-row justify-between p-2 border border-orange-800 rounded-lg">
                 <div>

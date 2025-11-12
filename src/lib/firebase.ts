@@ -5,4 +5,4 @@ export const firebaseConfig = {
   storageBucket: import.meta.env.VITE_FB_STORAGEBUCKET,
   messagingSenderId: import.meta.env.VITE_FB_MESSAGINGSENDERID,
   appId: import.meta.env.VITE_FB_APPID,
-};
+}

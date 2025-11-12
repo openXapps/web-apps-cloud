@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router';
-import AppBar from '@/components/AppBar';
+import { Outlet } from "react-router"
+import AppBar from "@/components/AppBar"
 
 export default function Layout() {
   return (
@@ -11,5 +11,5 @@ export default function Layout() {
         <Outlet />
       </div>
     </>
-  );
+  )
 }

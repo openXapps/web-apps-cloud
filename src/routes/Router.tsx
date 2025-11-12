@@ -1,17 +1,17 @@
-import { BrowserRouter, Routes, Route } from 'react-router';
+import { BrowserRouter, Routes, Route } from "react-router"
 
-import Layout from '@/routes/Layout';
-import Home from '@/routes/Home';
-import ProtectedRoute from '@/routes/ProtectedRoute';
-import SignUserIn from '@/routes/SignUserIn';
-import User from '@/routes/User';
+import Layout from "@/routes/Layout"
+import Home from "@/routes/Home"
+import ProtectedRoute from "@/routes/ProtectedRoute"
+import SignUserIn from "@/routes/SignUserIn"
+import User from "@/routes/User"
 
-import useAuth from '@/hooks/useAuth';
-import DataModules from './DataModules';
-import DataBookMarks from './DataBookMarks';
+import useAuth from "@/hooks/useAuth"
+import DataModules from "@/routes/DataModules"
+import DataBookMarks from "@/routes/DataBookMarks"
 
 export default function Router() {
-  const { isAuthorized } = useAuth();
+  const { isAuthorized } = useAuth()
 
   return (
     <BrowserRouter>
@@ -27,6 +27,7 @@ export default function Router() {
             <Route path="databookmarks" element={<DataBookMarks />} />
           </Route>
         </Route>
+        <Route path="*" element={<p>Error</p>}></Route>
       </Routes>
     </BrowserRouter>
   )

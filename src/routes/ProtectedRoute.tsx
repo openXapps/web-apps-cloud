@@ -1,15 +1,15 @@
-import { Navigate, Outlet } from 'react-router';
+import { Navigate, Outlet } from "react-router"
 
 type ProtectedRouteProps = {
-  isAuthorized: boolean;
-  redirectPath: string;
-};
+  isAuthorized: boolean
+  redirectPath: string
+}
 
 export default function ProtectedRoute({ isAuthorized, redirectPath }: ProtectedRouteProps) {
 
   if (!isAuthorized) {
-    return <Navigate to={redirectPath} replace />;
+    return <Navigate to={redirectPath} replace />
   }
 
-  return <Outlet />;
-};
+  return <Outlet />
+}

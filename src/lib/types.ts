@@ -1,62 +1,71 @@
-import type { Auth } from 'firebase/auth';
+import type { Auth } from 'firebase/auth'
 
 /**
  * Auth context state type
  */
 export type AuthContextState = {
-  auth: Auth;
-  isAuthorized: boolean;
+  auth: Auth
+  isAuthorized: boolean
 }
 
 type AuthReducerSetAuth = {
-  type: 'SET_AUTH';
-  payload: Auth;
+  type: 'SET_AUTH'
+  payload: Auth
 }
 
 // Placeholder context for later use
 type AuthReducerSetPlaceholder = {
-  type: 'SET_ISAUTHORIZED';
-  payload: boolean;
+  type: 'SET_ISAUTHORIZED'
+  payload: boolean
 }
 
 /**
  * Auth reducer action type
  */
-export type AuthReducerActions = AuthReducerSetAuth | AuthReducerSetPlaceholder;
+export type AuthReducerActions = AuthReducerSetAuth | AuthReducerSetPlaceholder
 
 /**
  * Auth context type
  */
 export type AuthContextType = {
-  state: AuthContextState;
-  dispatch: React.Dispatch<AuthReducerActions>;
+  state: AuthContextState
+  dispatch: React.Dispatch<AuthReducerActions>
 }
 
 /**
  * Firebase user info
  */
 export type UserInfoType = {
-  displayName: string | null;
-  photoURL: string | null;
-  email: string | null;
-  uid?: string | null;
-  emailVerified?: boolean;
+  displayName: string | null
+  photoURL: string | null
+  email: string | null
+  uid?: string | null
+  emailVerified?: boolean
 }
 
 /**
  * Firestore AppModules document type
  */
 export type AppModuleDocType = {
-  moduleId?: string;
-  moduleName: string;
-  moduleDesc?: string;
+  moduleId?: string
+  moduleName: string
+  moduleDesc?: string
 }
 
 /**
  * Firestore DataSync document type
  */
 export type DataSyncDocType = {
-  userId: string;
-  moduleId: string;
-  syncDate: string;
+  userId: string
+  moduleId: string
+  syncDate: string
 }
+
+/**
+ * Firestore Bookmarks document type
+ */
+export type UserBookmarkProfile = {
+  profileName: string
+  isActive: boolean
+}
+
