@@ -43,6 +43,7 @@ export type UserInfoType = {
   emailVerified?: boolean
 }
 
+
 /**
  * Firestore AppModules document type
  */
@@ -60,12 +61,3 @@ export type DataSyncDocType = {
   moduleId: string
   syncDate: string
 }
-
-/**
- * Firestore Bookmarks document type
- */
-export type UserBookmarkProfile = {
-  profileName: string
-  isActive: boolean
-}
-

@@ -1,29 +1,24 @@
-import { createContext, useEffect, useReducer, useState } from 'react';
-import { initializeApp } from 'firebase/app';
-import {
-  getAuth,
-  connectAuthEmulator
-} from 'firebase/auth';
+import { createContext, useEffect, useReducer, useState } from "react"
+import { getAuth, connectAuthEmulator } from "firebase/auth"
 
-import { firebaseConfig } from '@/lib/firebase';
-import type { AuthContextState, AuthContextType } from '@/lib/types';
-import AuthReducer from '@/context/AuthReducer';
+import { app } from "@/lib/firebase"
+import AuthReducer from "@/context/AuthReducer"
+import type { AuthContextState, AuthContextType } from "@/lib/types"
 
 // PRODUCTION
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+export const auth = getAuth(app)
 // DEVELOPMENT
-connectAuthEmulator(auth, "http://127.0.0.1:9099");
+connectAuthEmulator(auth, "http://127.0.0.1:9099")
 
 const initAppContextState: AuthContextState = {
   auth: auth,
   isAuthorized: false,
-};
+}
 
 export const AuthProviderContext = createContext<AuthContextType>({
   state: initAppContextState,
   dispatch: () => { },
-});
+})
 
 /**
  * Auth provider
@@ -31,16 +26,16 @@ export const AuthProviderContext = createContext<AuthContextType>({
  * @returns React provider
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(AuthReducer, initAppContextState);
-  const [loading, setLoading] = useState(true);
+  const [state, dispatch] = useReducer(AuthReducer, initAppContextState)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const unsubscribe = state.auth.onAuthStateChanged(user => {
-      // console.log('onAuthStateChanged triggered: ', state.auth);
-      setLoading(false);
-      dispatch({ type: 'SET_ISAUTHORIZED', payload: user != null })
-    });
-    return unsubscribe;
+      // console.log("onAuthStateChanged triggered: ", state.auth);
+      setLoading(false)
+      dispatch({ type: "SET_ISAUTHORIZED", payload: user != null })
+    })
+    return unsubscribe
   }, [])
 
   return (

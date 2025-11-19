@@ -5,16 +5,9 @@ import { addDoc, collection, getDocs, getFirestore, serverTimestamp, type Docume
 import useAuth from "@/hooks/useAuth"
 import { initializeApp } from "firebase/app"
 import { firebaseConfig } from "@/lib/firebase"
-import type { UsersBookmarkProfilesApp, UsersBookmarkProfilesFS } from "@/lib/models"
-import { converter } from "@/lib/firestore"
+import type { UsersBookmarkProfilesAppX } from "@/lib/models"
+import { converter } from "@/lib/converter"
 import { Button } from "@/components/ui/button"
-
-// https://javascript.plainenglish.io/mastering-firestore-converters-with-typescript-d433827a38c2
-
-// import type { UserBookmarkProfile } from "@/lib/types"
-// import AppBookmarks from "@/components/AppBookmarks";
-
-// const isErrorInit: { status: boolean, message: string } = { status: false, message: "" }
 
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
@@ -34,7 +27,7 @@ export default function DataBookMarks() {
     const query: string = "/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles/"
 
     // console.log(query)
-    const profileRef = collection(db, query).withConverter<UsersBookmarkProfilesApp>(converter)
+    const profileRef = collection(db, query).withConverter<UsersBookmarkProfilesAppX>(converter)
     const snapshot = await getDocs(profileRef)
     const data = snapshot.docs.map(doc => doc.data())
     console.log(data)

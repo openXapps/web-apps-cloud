@@ -1,4 +1,3 @@
-import { initializeApp } from 'firebase/app';
 import {
   collection,
   doc,
@@ -6,30 +5,24 @@ import {
   addDoc,
   setDoc,
   deleteDoc,
-  getFirestore,
   type DocumentData,
   type CollectionReference,
   type DocumentReference,
-  connectFirestoreEmulator,
-} from 'firebase/firestore';
+} from 'firebase/firestore'
 
-import { firebaseConfig } from '@/lib/firebase';
+import { useFirestore } from "@/hooks/useFirestore"
 
 // https://firebase.google.com/docs/firestore/query-data/get-data
 // https://firebase.google.com/docs/firestore/manage-data/add-data
-
-// PRODUCTION
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-// DEVELOPMENT
-connectFirestoreEmulator(db, '127.0.0.1', 8080);
+// https://javascript.plainenglish.io/mastering-firestore-converters-with-typescript-d433827a38c2
 
 type DocType = {
-  docId?: string;
-  document: DocumentData;
+  docId?: string
+  document: DocumentData
 }
 
 export default function useFirebase() {
+  const { db } = useFirestore()
 
   /**
    * Fetch documents from a collection
@@ -37,13 +30,13 @@ export default function useFirebase() {
    * @returns Firebase DocType object
    */
   async function getData(fbPath: string): Promise<DocType[]> {
-    let docList: DocType[] = [];
-    const docCollection: CollectionReference<DocumentData, DocumentData> = collection(db, fbPath);
-    const docSnapshot = await getDocs(docCollection);
+    let docList: DocType[] = []
+    const docCollection: CollectionReference<DocumentData, DocumentData> = collection(db, fbPath)
+    const docSnapshot = await getDocs(docCollection)
     docList = docSnapshot.docs.map(doc => {
       return { id: doc.id, document: doc.data() }
-    });
-    return docList;
+    })
+    return docList
   }
 
   /**
@@ -53,8 +46,8 @@ export default function useFirebase() {
    * @returns Reference to new document
    */
   async function addData(fbPath: string, fbDoc: DocumentData): Promise<DocumentReference<DocumentData, DocumentData>> {
-    const docCollection = collection(db, fbPath);
-    return addDoc(docCollection, fbDoc);
+    const docCollection = collection(db, fbPath)
+    return addDoc(docCollection, fbDoc)
   }
 
   /**
@@ -65,8 +58,8 @@ export default function useFirebase() {
    * @returns REmpty Promise
    */
   async function setData(fbPath: string, docId: string, fbDoc: DocumentData): Promise<void> {
-    const docRef = doc(db, fbPath, docId);
-    return setDoc(docRef, fbDoc);
+    const docRef = doc(db, fbPath, docId)
+    return setDoc(docRef, fbDoc)
   }
 
   /**
@@ -76,8 +69,8 @@ export default function useFirebase() {
  * @returns Empty Promise
  */
   async function delData(fbPath: string, docId: string): Promise<void> {
-    const docRef = doc(db, fbPath, docId);
-    return deleteDoc(docRef);
+    const docRef = doc(db, fbPath, docId)
+    return deleteDoc(docRef)
   }
 
   return {
