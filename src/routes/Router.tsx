@@ -8,7 +8,7 @@ import User from "@/routes/User"
 
 import useAuth from "@/hooks/useAuth"
 import DataModules from "@/routes/DataModules"
-import DataBookMarks from "@/routes/DataBookMarks"
+import DataBookMarksX from "./DataBookMarks"
 
 export default function Router() {
   const { isAuthorized } = useAuth()
@@ -24,7 +24,7 @@ export default function Router() {
           <Route element={<ProtectedRoute isAuthorized={isAuthorized} redirectPath="/" />}>
             <Route path="user" element={<User />} />
             <Route path="datamodules" element={<DataModules />} />
-            <Route path="databookmarks" element={<DataBookMarks />} />
+            <Route path="databookmarks" element={<DataBookMarksX />} />
           </Route>
         </Route>
         <Route path="*" element={<p>Error</p>}></Route>

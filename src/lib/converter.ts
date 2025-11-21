@@ -1,31 +1,42 @@
 import {
-  serverTimestamp,
+  FirestoreDataConverter,
   QueryDocumentSnapshot,
   SnapshotOptions,
-  type Timestamp,
+  DocumentData,
 } from "firebase/firestore"
 
-import type { UsersBookmarkProfilesAppX } from "@/lib/models"
+import type { FirestoreModel, UsersBookmarkProfiles } from "./models"
 
-// https://javascript.plainenglish.io/mastering-firestore-converters-with-typescript-d433827a38c2
-
-export const converter = <T extends { createdAt: Timestamp }>() => {
+/**
+ * Creates a generic FirestoreDataConverter for any model that extends FirestoreModel.
+ * It automatically adds the document "id" when reading data (fromFirestore)
+ * and omits the "id" when writing data (toFirestore).
+ *
+ * @returns A generic FirestoreDataConverter<T>
+ */
+function createConverter<T extends FirestoreModel>(): FirestoreDataConverter<T> {
   return {
-    toFirestore: (item: T) => {
-      return {
-        ...item,
-        createdAt: serverTimestamp()
-      }
-    },
-    fromFirestore: (snapshot: QueryDocumentSnapshot<T>, options?: SnapshotOptions) => {
-      const data = snapshot.data(options)
+    // --- READ OPERATION (fromFirestore) ---
+    fromFirestore(
+      snapshot: QueryDocumentSnapshot,
+      options: SnapshotOptions
+    ): T {
+      const data = snapshot.data(options)!
+      // Convert the data back to the type T and add the document ID
       return {
         ...data,
-        id: snapshot.id,
-        createdAt: data.createdAt?.toDate()
-      }
-    }
+        id: snapshot.id, // Inject the document ID here
+      } as T
+    },
+
+    // --- WRITE OPERATION (toFirestore) ---
+    toFirestore(modelObject: T): DocumentData {
+      // Destructure the object to exclude the "id" property before writing to Firestore
+      const { id, ...data } = modelObject
+      // Firestore only accepts plain objects, not DocumentData that includes the ID
+      return data
+    },
   }
 }
 
-export const profileFsConverter = converter<UsersBookmarkProfilesAppX>()
+export const profileConverter = createConverter<UsersBookmarkProfiles>()

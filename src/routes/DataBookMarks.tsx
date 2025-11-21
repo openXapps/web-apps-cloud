@@ -1,26 +1,14 @@
 import { useEffect, useState } from "react"
-import { addDoc, collection, getDocs, getFirestore, serverTimestamp, type DocumentData } from "firebase/firestore"
+import { addDoc, collection, getDocs, serverTimestamp, type DocumentData } from "firebase/firestore"
 
 // import useFirebase from "@/hooks/useFirebase"
-import useAuth from "@/hooks/useAuth"
-import { initializeApp } from "firebase/app"
-import { firebaseConfig } from "@/lib/firebase"
-import type { UsersBookmarkProfilesApp, UsersBookmarkProfilesFS } from "@/lib/models"
-import { converter } from "@/lib/firestore"
 import { Button } from "@/components/ui/button"
-
-// https://javascript.plainenglish.io/mastering-firestore-converters-with-typescript-d433827a38c2
-
-// import type { UserBookmarkProfile } from "@/lib/types"
-// import AppBookmarks from "@/components/AppBookmarks";
-
-// const isErrorInit: { status: boolean, message: string } = { status: false, message: "" }
-
-const app = initializeApp(firebaseConfig)
-const db = getFirestore(app)
+import useFirestore from "@/hooks/useFirestore"
+import useAuth from "@/hooks/useAuth"
+import { profileConverter } from "@/lib/converter"
 
 export default function DataBookMarks() {
-  // const firebase = useFirebase()
+  const { db } = useFirestore()
   const auth = useAuth()
 
   // const [profiles, setProfiles] = useState<DocumentData[]>([])
@@ -34,7 +22,7 @@ export default function DataBookMarks() {
     const query: string = "/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles/"
 
     // console.log(query)
-    const profileRef = collection(db, query).withConverter<UsersBookmarkProfilesApp>(converter)
+    const profileRef = collection(db, query).withConverter(profileConverter)
     const snapshot = await getDocs(profileRef)
     const data = snapshot.docs.map(doc => doc.data())
     console.log(data)
@@ -56,15 +44,13 @@ export default function DataBookMarks() {
 
   async function createProfile() {
     const path: string = "/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles/"
-    const docCollection = collection(db, path).withConverter<UsersBookmarkProfilesApp>(converter)
+    const docCollection = collection(db, path).withConverter(profileConverter)
     const doc = {
       profileName: "New Profile name",
       isActive: true,
-      createdAt: serverTimestamp() as any
     }
     const result = await addDoc(docCollection, doc)
-    console.log(result.path);
-    
+    console.log(result.path)
   }
 
   // const handleReset = () => {

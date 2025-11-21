@@ -10,7 +10,7 @@ import {
   type DocumentReference,
 } from 'firebase/firestore'
 
-import { useFirestore } from "@/hooks/useFirestore"
+import useFirestore from "@/hooks/useFirestore"
 
 // https://firebase.google.com/docs/firestore/query-data/get-data
 // https://firebase.google.com/docs/firestore/manage-data/add-data
