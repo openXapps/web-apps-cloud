@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router"
 import { type DocumentData } from "firebase/firestore"
 
-// import useAppModules from "@/hooks/useAppModules";
-import useFirebase from "@/hooks/useFirebase"
+import useFirebaseMethods from "@/hooks/useFirestoreMethods"
 
 import { ArrowLeft, Pencil, Save, Trash2 } from "lucide-react"
 
@@ -11,7 +10,6 @@ import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 
 const isErrorInit: { status: boolean, message: string } = { status: false, message: "" }
-// const isErrorInit: { status: boolean, message: string } = { status: true, message: "Test" };
 
 type Modes = "NEW" | "SET"
 type ModuleModelType = {
@@ -22,7 +20,7 @@ type ModuleModelType = {
 
 export default function AppModules() {
   // const appModulesHook = useAppModules();
-  const firebase = useFirebase()
+  const firebase = useFirebaseMethods()
   const moduleNameRef = useRef<HTMLInputElement | null>(null)
   const moduleDescRef = useRef<HTMLInputElement | null>(null)
   const rrNavigate = useNavigate()

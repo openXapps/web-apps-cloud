@@ -3,9 +3,14 @@ import {
   QueryDocumentSnapshot,
   SnapshotOptions,
   DocumentData,
+  serverTimestamp,
 } from "firebase/firestore"
 
-import type { FirestoreModel, UsersBookmarkProfiles } from "./models"
+import type {
+  AppModules,
+  FirestoreModel,
+  BookmarkerProfiles
+} from "./models"
 
 /**
  * Creates a generic FirestoreDataConverter for any model that extends FirestoreModel.
@@ -17,26 +22,45 @@ import type { FirestoreModel, UsersBookmarkProfiles } from "./models"
 function createConverter<T extends FirestoreModel>(): FirestoreDataConverter<T> {
   return {
     // --- READ OPERATION (fromFirestore) ---
-    fromFirestore(
-      snapshot: QueryDocumentSnapshot,
-      options: SnapshotOptions
-    ): T {
+    fromFirestore(snapshot: QueryDocumentSnapshot, options: SnapshotOptions): T {
       const data = snapshot.data(options)!
+      console.log("From FB:", data);
+      
       // Convert the data back to the type T and add the document ID
       return {
         ...data,
         id: snapshot.id, // Inject the document ID here
+        createdAt: data.createdAt?.toDate(),
+        updatedAt: data.updatedAt?.toDate()
       } as T
     },
 
     // --- WRITE OPERATION (toFirestore) ---
     toFirestore(modelObject: T): DocumentData {
       // Destructure the object to exclude the "id" property before writing to Firestore
-      const { id, ...data } = modelObject
+      const {
+        id,
+        createdAt,
+        updatedAt,
+        ...data
+      } = modelObject
+
       // Firestore only accepts plain objects, not DocumentData that includes the ID
-      return data
-    },
+      if (createdAt instanceof Date) {
+        return {
+          ...data,
+          updatedAt: serverTimestamp(),
+        }
+      } else {
+        return {
+          ...data,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        }
+      }
+    }
   }
 }
 
-export const profileConverter = createConverter<UsersBookmarkProfiles>()
+export const appModulesConverter = createConverter<AppModules>()
+export const bookmarkerProfilesConverter = createConverter<BookmarkerProfiles>()

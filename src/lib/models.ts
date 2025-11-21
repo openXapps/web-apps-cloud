@@ -1,30 +1,21 @@
-import type { FieldValue, Timestamp } from "firebase/firestore"
+import type { Timestamp } from "firebase/firestore"
 
 // Generic Firestore model
 export type FirestoreModel = {
   id?: string
-  // Other potential common fields like 'createdAt' or 'updatedAt'
+  createdAt?: Timestamp
+  updatedAt?: Timestamp
+}
+
+// /appModules/
+export type AppModules = FirestoreModel & {
+  moduleName: string
+  moduleDesc?: string
 }
 
 // /users/{userId}/bookmarker/{userId}/profiles/
-export type UsersBookmarkProfiles = FirestoreModel & {
-  profileId: string
+export type BookmarkerProfiles = FirestoreModel & {
   profileName: string
   isActive: boolean
-}
-
-// /users/{userId}/bookmarker/{userId}/profiles/
-export type UsersBookmarkProfilesAppX = {
-  id: string
-  profileName: string
-  isActive: boolean
-  createdAt: Date | FieldValue
-}
-
-// FS model - /users/{userId}/bookmarker/{userId}/profiles/
-export type UsersBookmarkProfilesFS = {
-  profileName: string
-  isActive: boolean
-  createdAt: Timestamp
 }
 

@@ -10,7 +10,7 @@ import {
   type DocumentReference,
 } from 'firebase/firestore'
 
-import useFirestore from "@/hooks/useFirestore"
+import useFirestoreContext from "@/hooks/useFirestoreContext"
 
 // https://firebase.google.com/docs/firestore/query-data/get-data
 // https://firebase.google.com/docs/firestore/manage-data/add-data
@@ -21,8 +21,8 @@ type DocType = {
   document: DocumentData
 }
 
-export default function useFirebase() {
-  const { db } = useFirestore()
+export default function useFirebaseMethods() {
+  const { db } = useFirestoreContext()
 
   /**
    * Fetch documents from a collection

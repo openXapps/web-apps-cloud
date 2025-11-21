@@ -3,7 +3,7 @@ import { useNavigate } from "react-router"
 import { type DocumentData } from "firebase/firestore"
 
 // import useAppModules from "@/hooks/useAppModules";
-import useFirebase from "@/hooks/useFirebase"
+import useFirebase from "@/hooks/useFirestoreMethods"
 import useAuth from "@/hooks/useAuth"
 
 // import { Pencil, Save, Trash2 } from "lucide-react";
