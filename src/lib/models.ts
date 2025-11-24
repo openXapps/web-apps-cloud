@@ -1,6 +1,6 @@
 import type { Timestamp } from "firebase/firestore"
 
-// Generic Firestore model
+// Generic Firestore model to be extended by app models
 export type FirestoreModel = {
   id?: string
   createdAt?: Timestamp
@@ -8,13 +8,13 @@ export type FirestoreModel = {
 }
 
 // /appModules/
-export type AppModules = FirestoreModel & {
+export type AppModule = FirestoreModel & {
   moduleName: string
   moduleDesc?: string
 }
 
 // /users/{userId}/bookmarker/{userId}/profiles/
-export type BookmarkerProfiles = FirestoreModel & {
+export type BookmarkerProfile = FirestoreModel & {
   profileName: string
   isActive: boolean
 }

@@ -19,10 +19,10 @@ type ModuleModelType = {
 
 export default function DataModules() {
   // const appModulesHook = useAppModules();
+  const rrNavigate = useNavigate()
   const firebase = useFirebaseMethods()
   const moduleNameRef = useRef<HTMLInputElement | null>(null)
   const moduleDescRef = useRef<HTMLInputElement | null>(null)
-  const rrNavigate = useNavigate()
   const [docId, setDocId] = useState<string>("")
   const [appModules, setAppModules] = useState<DocumentData[]>([])
   const [saveMode, setSaveMode] = useState<Modes>("NEW")

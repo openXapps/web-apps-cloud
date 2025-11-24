@@ -7,9 +7,9 @@ import {
 } from "firebase/firestore"
 
 import type {
-  AppModules,
+  AppModule,
   FirestoreModel,
-  BookmarkerProfiles
+  BookmarkerProfile
 } from "./models"
 
 /**
@@ -24,7 +24,7 @@ function createConverter<T extends FirestoreModel>(): FirestoreDataConverter<T> 
     // --- READ OPERATION (fromFirestore) ---
     fromFirestore(snapshot: QueryDocumentSnapshot, options: SnapshotOptions): T {
       const data = snapshot.data(options)!
-      console.log("From FB:", data);
+      // console.log("From FB:", data);
       
       // Convert the data back to the type T and add the document ID
       return {
@@ -44,6 +44,7 @@ function createConverter<T extends FirestoreModel>(): FirestoreDataConverter<T> 
         updatedAt,
         ...data
       } = modelObject
+      // console.log("To FB:", id, createdAt, updatedAt, data);
 
       // Firestore only accepts plain objects, not DocumentData that includes the ID
       if (createdAt instanceof Date) {
@@ -62,5 +63,6 @@ function createConverter<T extends FirestoreModel>(): FirestoreDataConverter<T> 
   }
 }
 
-export const appModulesConverter = createConverter<AppModules>()
-export const bookmarkerProfilesConverter = createConverter<BookmarkerProfiles>()
+// Create model converters here and export them
+export const appModulesConverter = createConverter<AppModule>()
+export const bookmarkerProfilesConverter = createConverter<BookmarkerProfile>()

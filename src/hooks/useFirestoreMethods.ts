@@ -21,7 +21,7 @@ type DocType = {
   document: DocumentData
 }
 
-export default function useFirebaseMethods() {
+export default function useFirestoreMethods() {
   const { db } = useFirestoreContext()
 
   /**
