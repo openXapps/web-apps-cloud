@@ -1,7 +1,5 @@
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router"
-
-import type { Timestamp } from "firebase/firestore/lite"
 
 import useAuth from "@/hooks/useAuth"
 import useFirestore from "@/hooks/useFirestore"
@@ -11,42 +9,53 @@ import type { BookmarkerProfile } from "@/lib/models"
 import { ArrowLeft, Pencil, Save, Trash2, Undo2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 
 type Modes = "NEW" | "SET"
 // const isErrorInit: { status: boolean, message: string } = { status: false, message: "" }
 
+type CurrentProfileProps = BookmarkerProfile & {
+  index: number
+}
+
+const initCurrentProfile: CurrentProfileProps = {
+  index: 0,
+  profileName: "",
+  isActive: true,
+  id: "",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+}
+
 export default function DataBookMarks() {
   const rrNavigate = useNavigate()
   const auth = useAuth()
-  const { isLoading, getDocument, getAllDocuments, addDocument } = useFirestore()
-  const profileNameRef = useRef<HTMLInputElement | null>(null)
-  const profileIsActiveRef = useRef<HTMLInputElement | null>(null)
-  const [profileCreatedAt, setProfileCreatedAt] = useState<Timestamp>()
-  // const profileCreatedAtRef = useRef<Timestamp>()
-  const [profileUpdatedAt, setProfileUpdatedAt] = useState<Timestamp>()
-  // const profileUpdatedAtRef = useRef<Timestamp>()
-  const [editingProfileId, setEditingProfileId] = useState<string>("")
-  const [saveMode, setSaveMode] = useState<Modes>("NEW")
+  const { isLoading, getDocument, getAllDocuments } = useFirestore()
+  const [currentProfile, setCurrentProfile] = useState<CurrentProfileProps>(initCurrentProfile)
   const [bookmarkerProfiles, setBookmarkerProfiles] = useState<BookmarkerProfile[]>([])
+  const [profileName, setProfileName] = useState<string>("")
+  const [profileIsActive, setProfileIsActive] = useState<boolean>(true)
+  const [saveMode, setSaveMode] = useState<Modes>("NEW")
   // const [isError, setIsError] = useState(isErrorInit)
   // const [isBusy, setIsBusy] = useState(false)
 
   async function handleSaveProfile(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
     e.preventDefault()
-    let path: string = "/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles/"
-    const data: BookmarkerProfile = {
-      profileName: profileNameRef.current?.value ? profileNameRef.current?.value : "",
-      isActive: profileIsActiveRef.current?.value === "true" ? true : false,
-    }
+    // let path: string = "/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles/"
+    // const data: BookmarkerProfile = {
+    //   profileName: profileNameRef.current?.value ? profileNameRef.current?.value : "",
+    //   isActive: profileIsActiveRef.current?.value === "true" ? true : false,
+    // }
 
     if (saveMode === "NEW") {
-      const result = await addDocument(path, {
-        ...data,
-        id: editingProfileId,
-        createdAt: profileCreatedAt,
-        updatedAt: profileUpdatedAt,
-      }, bookmarkerProfilesConverter)
-      console.log(result.path)
+      //   const result = await addDocument(path, {
+      //     ...data,
+      //     id: editingProfileId,
+      //     createdAt: profileCreatedAt,
+      //     updatedAt: profileUpdatedAt,
+      //   }, bookmarkerProfilesConverter)
+      //   console.log(result.path)
     }
 
     if (saveMode === "SET") {
@@ -56,29 +65,30 @@ export default function DataBookMarks() {
     }
   }
 
-  async function handleEditModule(e: React.FormEvent<HTMLButtonElement>, { ...profile }: BookmarkerProfile) {
+  async function handleEditModule(e: React.FormEvent<HTMLButtonElement>, index: number) {
     e.preventDefault()
     setSaveMode("SET")
-    if (profileNameRef.current && profileIsActiveRef.current) {
-      profileNameRef.current.value = profile.profileName
-      profileIsActiveRef.current.value = profile.isActive ? "true" : "false"
-      setProfileCreatedAt(profile.createdAt)
-      setProfileUpdatedAt(profile.updatedAt)
-      setEditingProfileId(profile.id)
-    }
+    setCurrentProfile({
+      index: index,
+      profileName: bookmarkerProfiles[index].profileName,
+      isActive: bookmarkerProfiles[index].isActive,
+      id: bookmarkerProfiles[index].id,
+      createdAt: bookmarkerProfiles[index].createdAt,
+      updatedAt: bookmarkerProfiles[index].updatedAt,
+    })
+    setProfileName(bookmarkerProfiles[index].profileName)
+    setProfileIsActive(bookmarkerProfiles[index].isActive)
   }
 
-  async function handleDeleteModule(e: React.FormEvent<HTMLButtonElement>, id: string) {
+  async function handleDeleteModule(e: React.FormEvent<HTMLButtonElement>, index: number) {
     e.preventDefault()
   }
 
   function handleReset() {
-    profileNameRef.current = null
-    profileIsActiveRef.current = null
-    setProfileCreatedAt(null)
-    setEditingProfileId("")
+    setProfileName("")
+    setProfileIsActive(true)
+    setCurrentProfile(initCurrentProfile)
     setSaveMode("NEW")
-    setBookmarkerProfiles([])
     // setIsBusy(false)
     // setIsError(isErrorInit)
   }
@@ -109,11 +119,18 @@ export default function DataBookMarks() {
       <div className="">
         <form className="flex gap-5 justify-between items-center border border-slate-400 rounded-lg p-3" action="" onSubmit={handleSaveProfile}>
           <div className="space-y-2 w-full">
-            <Input className="" ref={profileNameRef} placeholder="Profile name" />
-            <Input className="" ref={profileIsActiveRef} placeholder="Profile Status" />
-            <Input className="" value={profileCreatedAtRef.current?.toString()} disabled />
-            <Input className="" value={profileUpdatedAtRef.current?.toString()} disabled />
-            <Input className="" value={profileIdRef.current} disabled />
+            <Input type="text" value={profileName} onChange={e => setProfileName(e.currentTarget.value)} placeholder="Profile name" />
+            <div className="flex items-center space-x-3 border py-2 pl-3 rounded-sm">
+              <Label htmlFor="is-active">Enabled</Label>
+              <Switch id="is-active" checked={profileIsActive} onCheckedChange={checked => setProfileIsActive(checked)} />
+            </div>
+            {currentProfile.id && (
+              <div>
+                <p>Created at: {currentProfile.createdAt.toISOString()}</p>
+                <p>Updated at: {currentProfile.updatedAt.toISOString()}</p>
+                <p>Firestore ID: {currentProfile.id}</p>
+              </div>
+            )}
           </div>
           <div>
             <Button variant="ghost" size="icon" disabled={isLoading} onClick={handleSaveProfile}><Save /></Button>
@@ -128,7 +145,7 @@ export default function DataBookMarks() {
 
         {isLoading && <p className="mt-3">Loading...</p>}
 
-        {bookmarkerProfiles.length > 0 && bookmarkerProfiles.map(v => (
+        {bookmarkerProfiles.length > 0 && bookmarkerProfiles.map((v, i) => (
           <div key={v.id} className="flex flex-row justify-between mt-3 p-2 border border-orange-800 rounded-lg">
             <div>
               <p className="font-bold">{v.profileName}</p>
@@ -136,8 +153,8 @@ export default function DataBookMarks() {
               <p className="font-mono">ID: {v.id}</p>
             </div>
             <div className="flex flex-nowrap gap-1">
-              <Button variant="ghost" size="icon" disabled={isLoading} onClick={e => handleEditModule(e, v)}><Pencil /></Button>
-              <Button variant="ghost" size="icon" disabled={isLoading} onClick={e => handleDeleteModule(e, v.id)}><Trash2 /></Button>
+              <Button variant="ghost" size="icon" disabled={isLoading} onClick={e => handleEditModule(e, i)}><Pencil /></Button>
+              <Button variant="ghost" size="icon" disabled={isLoading} onClick={e => handleDeleteModule(e, i)}><Trash2 /></Button>
             </div>
           </div>
         ))}

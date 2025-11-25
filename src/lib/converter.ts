@@ -30,8 +30,8 @@ function createConverter<T extends FirestoreModel>(): FirestoreDataConverter<T> 
       return {
         ...data,
         id: snapshot.id, // Inject the document ID here
-        createdAt: data.createdAt?.toDate(),
-        updatedAt: data.updatedAt?.toDate()
+        createdAt: data.createdAt ? data.createdAt.toDate() : new Date(),
+        updatedAt: data.updatedAt ? data.updatedAt.toDate() : new Date(),
       } as T
     },
 
