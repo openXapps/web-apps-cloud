@@ -25,7 +25,7 @@ function createConverter<T extends FirestoreModel>(): FirestoreDataConverter<T> 
     fromFirestore(snapshot: QueryDocumentSnapshot, options: SnapshotOptions): T {
       const data = snapshot.data(options)!
       // console.log("From FB:", data);
-      
+
       // Convert the data back to the type T and add the document ID
       return {
         ...data,
@@ -47,9 +47,11 @@ function createConverter<T extends FirestoreModel>(): FirestoreDataConverter<T> 
       // console.log("To FB:", id, createdAt, updatedAt, data);
 
       // Firestore only accepts plain objects, not DocumentData that includes the ID
-      if (createdAt instanceof Date) {
+      // if (createdAt instanceof Date) {
+      if (id.length > 0) {
         return {
           ...data,
+          createdAt: createdAt,
           updatedAt: serverTimestamp(),
         }
       } else {

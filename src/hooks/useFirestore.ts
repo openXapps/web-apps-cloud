@@ -1,19 +1,20 @@
+import { useState } from "react"
 import {
   collection,
   doc,
   getDoc,
   getDocs,
   addDoc,
-  // setDoc,
+  setDoc,
   // deleteDoc,
-  // type DocumentData,
   // type CollectionReference,
-  // type DocumentReference,
   type FirestoreDataConverter,
+  type DocumentReference,
+  type DocumentData,
 } from 'firebase/firestore'
 
 import useFirestoreContext from "@/hooks/useFirestoreContext"
-import { useState } from "react"
+import type { GetAllDocumentsProps, GetDocumentProps } from "@/lib/types"
 
 // https://firebase.google.com/docs/firestore/query-data/get-data
 // https://firebase.google.com/docs/firestore/manage-data/add-data
@@ -25,73 +26,55 @@ export default function useFirestore() {
 
   /**
    * Fetch a document from a collection
-   * @param {string} path Firestore database path
-   * @returns Firestore document object
    */
-  async function getDocument<T>(path: string, id: string, converter: FirestoreDataConverter<T>): Promise<T | undefined> {
+  async function getDocument<T>(path: string, id: string, converter: FirestoreDataConverter<T>): Promise<GetDocumentProps<T>> {
     setIsLoading(true)
-    let document: T | undefined = undefined
+    let response: GetDocumentProps<T> = { message: "No document found", ok: false, payload: <T>{} }
     const docRef = doc(db, path, id).withConverter(converter)
     const docSnap = await getDoc(docRef)
 
     if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data())
-      document = docSnap.data()
-    } else {
-      // docSnap.data() will be undefined in this case
-      console.log("No such document!")
+      response = { ok: true, message: "", payload: docSnap.data() }
     }
     setIsLoading(false)
-    return document
+    return response
   }
 
   /**
    * Fetch documents from a collection
-   * @param {string} path Firestore database path
-   * @returns Firestore DocType object
    */
-  async function getAllDocuments<T>(path: string, converter: FirestoreDataConverter<T>): Promise<T[]> {
+  async function getAllDocuments<T>(path: string, converter: FirestoreDataConverter<T>): Promise<GetAllDocumentsProps<T>> {
     setIsLoading(true)
+    let response: GetAllDocumentsProps<T> = { message: "No documents found", ok: false, payload: [] }
     let documents: T[] = []
     const querySnap = await getDocs(collection(db, path).withConverter(converter))
-    
-    querySnap.forEach((document) => {
-      // doc.data() is never undefined for query doc snapshots
-      // console.log(doc.id, " => ", doc.data())
-      documents.push(document.data())
-    })
+
+    if (!querySnap.empty) {
+      querySnap.forEach((document) => documents.push(document.data()))
+      response = { ok: true, message: "", payload: documents }
+    }
     setIsLoading(false)
-    return documents
+    return response
   }
 
   /**
    * Create new document in a collection
-   * @param {string} path Firestore database path
-   * @param {DocumentData} payload Document object
-   * @returns Reference to new document
    */
-  async function addDocument<T>(path: string, payload: T, converter: FirestoreDataConverter<T>) {
+  async function addDocument<T>(path: string, payload: T, converter: FirestoreDataConverter<T>): Promise<DocumentReference<T, DocumentData>> {
     const docCollection = collection(db, path).withConverter(converter)
     return addDoc(docCollection, payload)
   }
 
   /**
    * Update an existing document in a collection
-   * @param {string} fbPath Firestore database path string
-   * @param {string} docId Document Id to update
-   * @param {any} fbDoc Document data consists of fields mapped to values
-   * @returns REmpty Promise
    */
-  // async function setData(fbPath: string, docId: string, fbDoc: DocumentData): Promise<void> {
-  //   const docRef = doc(db, fbPath, docId)
-  //   return setDoc(docRef, fbDoc)
-  // }
+  async function setDocument<T>(path: string, id: string, payload: T, converter: FirestoreDataConverter<T>): Promise<void> {
+    const docRef = doc(db, path, id).withConverter(converter)
+    return setDoc(docRef, payload)
+  }
 
   /**
  * Delete an existing document in a collection
- * @param {string} fbPath Firestore database path string
- * @param {string} docId Document Id to delete
- * @returns Empty Promise
  */
   // async function delData(fbPath: string, docId: string): Promise<void> {
   //   const docRef = doc(db, fbPath, docId)
@@ -103,7 +86,7 @@ export default function useFirestore() {
     getDocument: getDocument,
     getAllDocuments: getAllDocuments,
     addDocument: addDocument,
-    // setData: setData,
+    setDocument: setDocument,
     // delData: delData,
   }
 }

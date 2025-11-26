@@ -5,6 +5,7 @@ import useAuth from "@/hooks/useAuth"
 import useFirestore from "@/hooks/useFirestore"
 import { bookmarkerProfilesConverter } from "@/lib/converter"
 import type { BookmarkerProfile } from "@/lib/models"
+import type { GetAllDocumentsProps, GetDocumentProps } from "@/lib/types"
 
 import { ArrowLeft, Pencil, Save, Trash2, Undo2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,7 +14,6 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 
 type Modes = "NEW" | "SET"
-// const isErrorInit: { status: boolean, message: string } = { status: false, message: "" }
 
 type CurrentProfileProps = BookmarkerProfile & {
   index: number
@@ -31,8 +31,9 @@ const initCurrentProfile: CurrentProfileProps = {
 export default function DataBookMarks() {
   const rrNavigate = useNavigate()
   const auth = useAuth()
-  const { isLoading, getDocument, getAllDocuments } = useFirestore()
+  const { isLoading, getDocument, getAllDocuments, addDocument, setDocument } = useFirestore()
   const [currentProfile, setCurrentProfile] = useState<CurrentProfileProps>(initCurrentProfile)
+  // const [bookmarkerProfile, setBookmarkerProfile] = useState<BookmarkerProfile>()
   const [bookmarkerProfiles, setBookmarkerProfiles] = useState<BookmarkerProfile[]>([])
   const [profileName, setProfileName] = useState<string>("")
   const [profileIsActive, setProfileIsActive] = useState<boolean>(true)
@@ -42,31 +43,36 @@ export default function DataBookMarks() {
 
   async function handleSaveProfile(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
     e.preventDefault()
-    // let path: string = "/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles/"
-    // const data: BookmarkerProfile = {
-    //   profileName: profileNameRef.current?.value ? profileNameRef.current?.value : "",
-    //   isActive: profileIsActiveRef.current?.value === "true" ? true : false,
-    // }
+    let path: string = "/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles/"
 
     if (saveMode === "NEW") {
-      //   const result = await addDocument(path, {
-      //     ...data,
-      //     id: editingProfileId,
-      //     createdAt: profileCreatedAt,
-      //     updatedAt: profileUpdatedAt,
-      //   }, bookmarkerProfilesConverter)
-      //   console.log(result.path)
+      await addDocument(path, {
+        profileName: profileName,
+        isActive: profileIsActive,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        id: ""
+      }, bookmarkerProfilesConverter)
+      handleReset()
+      // console.log(result.path)
     }
 
     if (saveMode === "SET") {
-      // const docRef = doc(db, path, editingProfileId).withConverter(bookmarkerProfilesConverter)
-      // const result = await setDoc(docRef, data)
-      // console.log(result)
+      await setDocument(path, currentProfile.id, {
+        profileName: profileName,
+        isActive: profileIsActive,
+        createdAt: currentProfile.createdAt,
+        updatedAt: new Date(),
+        id: currentProfile.id
+      }, bookmarkerProfilesConverter)
+      handleReset()
     }
   }
 
   async function handleEditModule(e: React.FormEvent<HTMLButtonElement>, index: number) {
     e.preventDefault()
+    console.log(bookmarkerProfiles[index]);
+    
     setSaveMode("SET")
     setCurrentProfile({
       index: index,
@@ -100,14 +106,15 @@ export default function DataBookMarks() {
 
   async function handleGetOneDocument(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
     e.preventDefault()
-    const data = await getDocument("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", "3CxzC03kxeBx1riVoOa4", bookmarkerProfilesConverter)
+    const data: GetDocumentProps<BookmarkerProfile> = await getDocument("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", "3CxzC03kxeBx1riVoOa4", bookmarkerProfilesConverter)
     console.log(data)
   }
 
   async function handleGetDocumentList(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
     e.preventDefault()
-    const data = await getAllDocuments("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", bookmarkerProfilesConverter)
-    setBookmarkerProfiles(data)
+    const data: GetAllDocumentsProps<BookmarkerProfile> = await getAllDocuments("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", bookmarkerProfilesConverter)
+    console.log(data)
+    setBookmarkerProfiles(data.payload)
   }
 
   return (

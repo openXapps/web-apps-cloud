@@ -43,5 +43,21 @@ export type UserInfoType = {
   emailVerified?: boolean
 }
 
+/**
+ * Firestore response type for getDocument()
+ */
+export type GetDocumentProps<T> = {
+  ok: boolean
+  message: string
+  payload: T
+}
 
+/**
+ * Firestore response type for getAllDocuments()
+ */
+export type GetAllDocumentsProps<T> = {
+  ok: boolean
+  message: string
+  payload: T[]
+}
 
