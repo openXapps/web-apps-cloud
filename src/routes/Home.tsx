@@ -20,8 +20,11 @@ export default function Home() {
           </div>
         </div>
       ) : (
-        <div className="flex gap-3">
-          <p>You are not signed in, please <span><Link className="text-orange-400" to="/signin">Sign In</Link></span></p>
+        <div className="flex gap-2">
+          <p className="inline">You are not signed in, please</p>
+          <Link className="text-orange-400" to="/signin">Sign In</Link>
+          <p>or</p>
+          <Link className="text-orange-400" to="/signup">Sign Up</Link>
         </div>
       )}
     </div>

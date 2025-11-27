@@ -12,20 +12,20 @@ const isErrorInit: { status: boolean, message: string } = { status: false, messa
 const testUser = "john@domain.com"
 const testPass = "password"
 
-export default function SignUserIn() {
+export default function SignInUser() {
   const rrNavigate = useNavigate()
-  const { signUserIn, setAuthorized, isAuthorized } = useAuth()
+  const { signInUser, setAuthorized, isAuthorized } = useAuth()
   const username = useRef<HTMLInputElement | null>(null)
   const password = useRef<HTMLInputElement | null>(null)
   const [isError, setIsError] = useState(isErrorInit)
   const [isBusy, setIsBusy] = useState(false)
 
-  const handleSignUserIn = async (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
+  const handleSignInUser = async (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault()
     if (username.current?.value && password.current?.value) {
       setIsBusy(true)
       try {
-        await signUserIn(username.current.value, password.current.value)
+        await signInUser(username.current.value, password.current.value)
         isError && setIsError(isErrorInit)
         setAuthorized(true)
         rrNavigate("/", { replace: true })
@@ -49,7 +49,7 @@ export default function SignUserIn() {
   return (
     <div className="max-w-md mx-auto p-3">
       <h1 className="font-bold mb-3">Sign In</h1>
-      <form action="" onSubmit={handleSignUserIn}>
+      <form action="" onSubmit={handleSignInUser}>
         <div className="flex flex-col gap-3">
           <Input
             defaultValue={testUser}
@@ -63,7 +63,7 @@ export default function SignUserIn() {
             type="password"
             placeholder="password" />
           <div className="flex gap-2">
-            <Button disabled={isBusy || isAuthorized} className="" onClick={handleSignUserIn} type="submit">Sign In</Button>
+            <Button disabled={isBusy || isAuthorized} className="" onClick={handleSignInUser} type="submit">Sign In</Button>
             <Button disabled={isBusy || isAuthorized} className="" onClick={handleClearFields} type="button">Clear</Button>
             <Button disabled={isBusy} className="" onClick={() => rrNavigate(-1)} type="button">Cancel</Button>
           </div>

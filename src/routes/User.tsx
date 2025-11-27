@@ -1,26 +1,40 @@
 
-import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
-import useAuth from '@/hooks/useAuth';
+import useAuth from '@/hooks/useAuth'
+import { auth } from "@/context/AuthProvider"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 
 // https://picsum.photos/
 
 export default function User() {
-  const rrNavigate = useNavigate();
-  const { getInfo, setInfo, setEmail, setPassword, getUID } = useAuth();
-  const [isBusy, setIsBusy] = useState(false);
-  const nameRef = useRef<HTMLInputElement | null>(null);
-  const photoRef = useRef<HTMLInputElement | null>(null);
-  const emailRef = useRef<HTMLInputElement | null>(null);
-  const passwordRef = useRef<HTMLInputElement | null>(null);
+  const rrNavigate = useNavigate()
+  const { getInfo, setInfo, setEmail, setPassword, getUID } = useAuth()
+  const [isBusy, setIsBusy] = useState(false)
+  const nameRef = useRef<HTMLInputElement | null>(null)
+  const photoRef = useRef<HTMLInputElement | null>(null)
+  const emailRef = useRef<HTMLInputElement | null>(null)
+  const passwordRef = useRef<HTMLInputElement | null>(null)
+  const [token, setToken] = useState<string | undefined>("")
+
+  useEffect(() => {
+    async function getToken() {
+      const result = await auth.currentUser?.getIdToken(false)
+      setToken(result)
+    }
+    getToken()
+
+    return () => { }
+  }, [])
 
   const handleUpdateUser = async (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
-    e.preventDefault();
-    setIsBusy(true);
+    e.preventDefault()
+    setIsBusy(true)
     if (
       nameRef.current !== null &&
       emailRef.current !== null &&
@@ -31,32 +45,32 @@ export default function User() {
           displayName: nameRef.current.value,
           photoURL: photoRef.current.value,
           email: emailRef.current.value,
-        });
+        })
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     if (emailRef.current !== null) {
-      const isEmailValid = true; // Fixed value for now. Need implementation
+      const isEmailValid = true // Fixed value for now. Need implementation
       if (isEmailValid && emailRef.current.value !== getInfo().email) {
         try {
-          await setEmail(emailRef.current.value);
+          await setEmail(emailRef.current.value)
         } catch (error) {
-          console.log(error);
+          console.log(error)
         }
       }
     }
     if (passwordRef.current !== null) {
-      const isPasswordValid = true; // Fixed value for now. Need implementation
+      const isPasswordValid = true // Fixed value for now. Need implementation
       if (isPasswordValid) {
         try {
-          await setPassword(passwordRef.current.value);
+          await setPassword(passwordRef.current.value)
         } catch (error) {
-          console.log(error);
+          console.log(error)
         }
       }
     }
-    setIsBusy(false);
-    rrNavigate(-1);
+    setIsBusy(false)
+    rrNavigate(-1)
   }
 
   return (
@@ -75,6 +89,10 @@ export default function User() {
         <Button onClick={() => rrNavigate(-1)} disabled={isBusy}>Back</Button>
       </div>
       <p>Email validated: {getInfo().emailVerified ? 'YES' : 'NO'}</p>
+      <div className="space-y-2">
+        <Label htmlFor="token-key">Token Key:</Label>
+        <Textarea id="token-key" rows={10} defaultValue={token} />
+      </div>
     </div>
-  );
+  )
 }

@@ -8,12 +8,12 @@ import { Button } from "./ui/button"
 import useAuth from "@/hooks/useAuth"
 
 export default function AppBar() {
-  const { auth, isAuthorized, setAuthorized, signUserOut } = useAuth()
+  const { auth, isAuthorized, setAuthorized, signOutUser } = useAuth()
   const rrNavigate = useNavigate()
 
   const handleSignUserOut = async () => {
     try {
-      await signUserOut(auth)
+      await signOutUser(auth)
       setAuthorized(false)
     } catch (error) {
       console.log("Sign out error")

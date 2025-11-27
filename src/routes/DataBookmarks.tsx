@@ -28,7 +28,7 @@ const initCurrentProfile: CurrentProfileProps = {
   updatedAt: new Date(),
 }
 
-export default function DataBookMarks() {
+export default function DataBookmarks() {
   const rrNavigate = useNavigate()
   const auth = useAuth()
   const { isLoading, getDocument, getAllDocuments, addDocument, setDocument } = useFirestore()
