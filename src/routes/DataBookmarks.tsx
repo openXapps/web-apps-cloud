@@ -3,9 +3,9 @@ import { useNavigate } from "react-router"
 
 import useAuth from "@/hooks/useAuth"
 import useFirestore from "@/hooks/useFirestore"
-import { bookmarkerProfilesConverter } from "@/lib/converter"
+import { bookmarkerProfileConverter } from "@/lib/converter"
 import type { BookmarkerProfile } from "@/lib/models"
-import type { GetAllDocumentsProps, GetDocumentProps } from "@/lib/types"
+import type { GetAllDocumentsProps } from "@/lib/types"
 
 import { ArrowLeft, Pencil, Save, Trash2, Undo2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -15,12 +15,12 @@ import { Switch } from "@/components/ui/switch"
 
 type Modes = "NEW" | "SET"
 
-type CurrentProfileProps = BookmarkerProfile & {
-  index: number
-}
+// type CurrentProfileProps = BookmarkerProfile & {
+//   index: number
+// }
 
-const initCurrentProfile: CurrentProfileProps = {
-  index: 0,
+const initCurrentProfile: BookmarkerProfile = {
+  // index: 0,
   profileName: "",
   isActive: true,
   id: "",
@@ -31,9 +31,8 @@ const initCurrentProfile: CurrentProfileProps = {
 export default function DataBookmarks() {
   const rrNavigate = useNavigate()
   const auth = useAuth()
-  const { isLoading, getDocument, getAllDocuments, addDocument, setDocument } = useFirestore()
-  const [currentProfile, setCurrentProfile] = useState<CurrentProfileProps>(initCurrentProfile)
-  // const [bookmarkerProfile, setBookmarkerProfile] = useState<BookmarkerProfile>()
+  const { isLoading, getAllDocuments, addDocument, setDocument } = useFirestore()
+  const [currentProfile, setCurrentProfile] = useState<BookmarkerProfile>(initCurrentProfile)
   const [bookmarkerProfiles, setBookmarkerProfiles] = useState<BookmarkerProfile[]>([])
   const [profileName, setProfileName] = useState<string>("")
   const [profileIsActive, setProfileIsActive] = useState<boolean>(true)
@@ -52,7 +51,7 @@ export default function DataBookmarks() {
         createdAt: new Date(),
         updatedAt: new Date(),
         id: ""
-      }, bookmarkerProfilesConverter)
+      }, bookmarkerProfileConverter)
       handleReset()
       // console.log(result.path)
     }
@@ -64,7 +63,7 @@ export default function DataBookmarks() {
         createdAt: currentProfile.createdAt,
         updatedAt: new Date(),
         id: currentProfile.id
-      }, bookmarkerProfilesConverter)
+      }, bookmarkerProfileConverter)
       handleReset()
     }
   }
@@ -75,7 +74,7 @@ export default function DataBookmarks() {
     
     setSaveMode("SET")
     setCurrentProfile({
-      index: index,
+      // index: index,
       profileName: bookmarkerProfiles[index].profileName,
       isActive: bookmarkerProfiles[index].isActive,
       id: bookmarkerProfiles[index].id,
@@ -104,16 +103,14 @@ export default function DataBookmarks() {
     handleReset()
   }
 
-  async function handleGetOneDocument(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
-    e.preventDefault()
-    const data: GetDocumentProps<BookmarkerProfile> = await getDocument("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", "3CxzC03kxeBx1riVoOa4", bookmarkerProfilesConverter)
-    console.log(data)
-  }
+  // async function handleGetOneDocument(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
+  //   e.preventDefault()
+  //   const data: GetDocumentProps<BookmarkerProfile> = await getDocument("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", "3CxzC03kxeBx1riVoOa4", bookmarkerProfileConverter)
+  // }
 
   async function handleGetDocumentList(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
     e.preventDefault()
-    const data: GetAllDocumentsProps<BookmarkerProfile> = await getAllDocuments("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", bookmarkerProfilesConverter)
-    console.log(data)
+    const data: GetAllDocumentsProps<BookmarkerProfile> = await getAllDocuments("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", bookmarkerProfileConverter)
     setBookmarkerProfiles(data.payload)
   }
 
@@ -146,7 +143,7 @@ export default function DataBookmarks() {
         </form>
 
         <div className="mt-3 flex gap-2">
-          <Button onClick={handleGetOneDocument}>Get One Document</Button>
+          {/* <Button onClick={handleGetOneDocument}>Get One Document</Button> */}
           <Button onClick={handleGetDocumentList}>Get Document List</Button>
         </div>
 

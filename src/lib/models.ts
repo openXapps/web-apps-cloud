@@ -12,7 +12,7 @@ export type BookmarkerProfile = FirestoreModel & {
 }
 
 // /appModules/
-export type AppModule = FirestoreModel & {
+export type AppModuleModel = FirestoreModel & {
   moduleName: string
   moduleDesc?: string
 }

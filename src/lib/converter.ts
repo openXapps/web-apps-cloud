@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore"
 
 import type {
-  AppModule,
+  AppModuleModel,
   FirestoreModel,
   BookmarkerProfile
 } from "./models"
@@ -66,5 +66,5 @@ function createConverter<T extends FirestoreModel>(): FirestoreDataConverter<T> 
 }
 
 // Create model converters here and export them
-export const appModulesConverter = createConverter<AppModule>()
-export const bookmarkerProfilesConverter = createConverter<BookmarkerProfile>()
+export const appModuleConverter = createConverter<AppModuleModel>()
+export const bookmarkerProfileConverter = createConverter<BookmarkerProfile>()
