@@ -7,7 +7,7 @@ export default function Layout() {
       <div className="bg-slate-400 dark:bg-slate-700">
         <AppBar />
       </div>
-      <div className="container max-w-[1024px]">
+      <div className="sm:container max-w-[1024px] mb-20">
         <Outlet />
       </div>
     </>

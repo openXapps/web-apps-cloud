@@ -6,8 +6,7 @@ import {
   getDocs,
   addDoc,
   setDoc,
-  // deleteDoc,
-  // type CollectionReference,
+  deleteDoc,
   type FirestoreDataConverter,
   type DocumentReference,
   type DocumentData,
@@ -76,10 +75,10 @@ export default function useFirestore() {
   /**
  * Delete an existing document in a collection
  */
-  // async function delData(fbPath: string, docId: string): Promise<void> {
-  //   const docRef = doc(db, fbPath, docId)
-  //   return deleteDoc(docRef)
-  // }
+  async function deleteDocument(path: string, id: string): Promise<void> {
+    const docRef = doc(db, path, id)
+    return deleteDoc(docRef)
+  }
 
   return {
     isLoading,
@@ -87,6 +86,6 @@ export default function useFirestore() {
     getAllDocuments: getAllDocuments,
     addDocument: addDocument,
     setDocument: setDocument,
-    // delData: delData,
+    deleteDocument: deleteDocument,
   }
 }

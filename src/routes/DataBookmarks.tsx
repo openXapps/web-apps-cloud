@@ -12,15 +12,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { useEffect } from "react"
+import { useRef } from "react"
 
 type Modes = "NEW" | "SET"
 
-// type CurrentProfileProps = BookmarkerProfile & {
-//   index: number
-// }
-
 const initCurrentProfile: BookmarkerProfile = {
-  // index: 0,
   profileName: "",
   isActive: true,
   id: "",
@@ -31,18 +28,28 @@ const initCurrentProfile: BookmarkerProfile = {
 export default function DataBookmarks() {
   const rrNavigate = useNavigate()
   const auth = useAuth()
-  const { isLoading, getAllDocuments, addDocument, setDocument } = useFirestore()
+  const { isLoading, getAllDocuments, addDocument, setDocument, deleteDocument } = useFirestore()
   const [currentProfile, setCurrentProfile] = useState<BookmarkerProfile>(initCurrentProfile)
   const [bookmarkerProfiles, setBookmarkerProfiles] = useState<BookmarkerProfile[]>([])
   const [profileName, setProfileName] = useState<string>("")
   const [profileIsActive, setProfileIsActive] = useState<boolean>(true)
   const [saveMode, setSaveMode] = useState<Modes>("NEW")
-  // const [isError, setIsError] = useState(isErrorInit)
-  // const [isBusy, setIsBusy] = useState(false)
+  const focusRef = useRef<HTMLInputElement>(null)
+
+  async function fetchData() {
+    const data: GetAllDocumentsProps<BookmarkerProfile> = await getAllDocuments(`/users/${auth.getUID()}/bookmarker/${auth.getUID()}/profiles`, bookmarkerProfileConverter)
+    setBookmarkerProfiles(data.payload)
+  }
+
+  useEffect(() => {
+    fetchData()
+
+    return () => { }
+  }, [])
 
   async function handleSaveProfile(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
     e.preventDefault()
-    let path: string = "/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles/"
+    const path: string = `/users/${auth.getUID()}/bookmarker/${auth.getUID()}/profiles`
 
     if (saveMode === "NEW") {
       await addDocument(path, {
@@ -53,7 +60,7 @@ export default function DataBookmarks() {
         id: ""
       }, bookmarkerProfileConverter)
       handleReset()
-      // console.log(result.path)
+      fetchData()
     }
 
     if (saveMode === "SET") {
@@ -65,16 +72,20 @@ export default function DataBookmarks() {
         id: currentProfile.id
       }, bookmarkerProfileConverter)
       handleReset()
+      fetchData()
     }
+  }
+
+  async function handleDeleteModule(e: React.FormEvent<HTMLButtonElement>, index: number) {
+    e.preventDefault()
+    await deleteDocument("/appModules/", bookmarkerProfiles[index].id)
+    fetchData()
   }
 
   async function handleEditModule(e: React.FormEvent<HTMLButtonElement>, index: number) {
     e.preventDefault()
-    console.log(bookmarkerProfiles[index]);
-    
     setSaveMode("SET")
     setCurrentProfile({
-      // index: index,
       profileName: bookmarkerProfiles[index].profileName,
       isActive: bookmarkerProfiles[index].isActive,
       id: bookmarkerProfiles[index].id,
@@ -83,10 +94,7 @@ export default function DataBookmarks() {
     })
     setProfileName(bookmarkerProfiles[index].profileName)
     setProfileIsActive(bookmarkerProfiles[index].isActive)
-  }
-
-  async function handleDeleteModule(e: React.FormEvent<HTMLButtonElement>, index: number) {
-    e.preventDefault()
+    focusRef.current?.focus()
   }
 
   function handleReset() {
@@ -94,24 +102,11 @@ export default function DataBookmarks() {
     setProfileIsActive(true)
     setCurrentProfile(initCurrentProfile)
     setSaveMode("NEW")
-    // setIsBusy(false)
-    // setIsError(isErrorInit)
   }
 
   function handleUndo(e: React.FormEvent<HTMLButtonElement>) {
     e.preventDefault()
     handleReset()
-  }
-
-  // async function handleGetOneDocument(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
-  //   e.preventDefault()
-  //   const data: GetDocumentProps<BookmarkerProfile> = await getDocument("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", "3CxzC03kxeBx1riVoOa4", bookmarkerProfileConverter)
-  // }
-
-  async function handleGetDocumentList(e: React.FormEvent<HTMLButtonElement | HTMLFormElement>) {
-    e.preventDefault()
-    const data: GetAllDocumentsProps<BookmarkerProfile> = await getAllDocuments("/users/" + auth.getUID() + "/bookmarker/" + auth.getUID() + "/profiles", bookmarkerProfileConverter)
-    setBookmarkerProfiles(data.payload)
   }
 
   return (
@@ -123,29 +118,17 @@ export default function DataBookmarks() {
       <div className="">
         <form className="flex gap-5 justify-between items-center border border-slate-400 rounded-lg p-3" action="" onSubmit={handleSaveProfile}>
           <div className="space-y-2 w-full">
-            <Input type="text" value={profileName} onChange={e => setProfileName(e.currentTarget.value)} placeholder="Profile name" />
+            <Input ref={focusRef} type="text" value={profileName} onChange={e => setProfileName(e.currentTarget.value)} placeholder="Profile name" />
             <div className="flex items-center space-x-3 border py-2 pl-3 rounded-sm">
               <Label htmlFor="is-active">Enabled</Label>
               <Switch id="is-active" checked={profileIsActive} onCheckedChange={checked => setProfileIsActive(checked)} />
             </div>
-            {currentProfile.id && (
-              <div>
-                <p>Created at: {currentProfile.createdAt.toISOString()}</p>
-                <p>Updated at: {currentProfile.updatedAt.toISOString()}</p>
-                <p>Firestore ID: {currentProfile.id}</p>
-              </div>
-            )}
           </div>
           <div>
             <Button variant="ghost" size="icon" disabled={isLoading} onClick={handleSaveProfile}><Save /></Button>
             <Button variant="ghost" size="icon" disabled={isLoading} onClick={handleUndo}><Undo2 /></Button>
           </div>
         </form>
-
-        <div className="mt-3 flex gap-2">
-          {/* <Button onClick={handleGetOneDocument}>Get One Document</Button> */}
-          <Button onClick={handleGetDocumentList}>Get Document List</Button>
-        </div>
 
         {isLoading && <p className="mt-3">Loading...</p>}
 
