@@ -21,7 +21,7 @@ export default function AppBar() {
   }
 
   return (
-    <div className="container max-w-[1024px]">
+    <div className="sm:container max-w-[1024px]">
       <div className="flex justify-between items-center p-3 mx-auto">
         <h1 className="text-xl font-bold text-orange-900 dark:text-orange-400">OpenApps Cloud Data Manager</h1>
         <div className="flex gap-2">

@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { useEffect } from "react"
 import { useRef } from "react"
+import { twMerge } from "tailwind-merge"
 
 type Modes = "NEW" | "SET"
 
@@ -135,7 +136,7 @@ export default function DataBookmarks() {
         {bookmarkerProfiles.length > 0 && bookmarkerProfiles.map((v, i) => (
           <div key={v.id} className="flex flex-row justify-between mt-3 p-2 border border-orange-800 rounded-lg">
             <div>
-              <p className="font-bold">{v.profileName}</p>
+              <p className={twMerge(!v.isActive && "text-red-400", "font-bold")}>{v.profileName}</p>
               <p>Is Active: {v.isActive ? "true" : "false"}</p>
               <p className="font-mono">ID: {v.id}</p>
             </div>
